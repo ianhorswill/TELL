@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TELL;
-using static TELL.Primitives;
+using static TELL.Language;
 
 namespace Tests
 {
     [TestClass]
     public class ProofTests
     {
-        public void AssertTrue(AnyGoal g) => Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsTrue(g.IsTrue);
-        public void AssertNot(AnyGoal g) => Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsFalse(g.IsTrue);
+        public void AssertTrue(Goal g) => Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsTrue(g.IsTrue);
+        public void AssertNot(Goal g) => Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsFalse(g.IsTrue);
 
         /// <summary>
         /// This lets you test ProveUsingRule directly, at least a little, so you don't have to have
@@ -21,7 +21,7 @@ namespace Tests
         [TestMethod]
         public void RuleTest()
         {
-            var p = new TellPredicate<string>("p");
+            var p = new TELL.Predicate<string>("p");
             // This is a rule that just says "p[a] is true unconditionally"
             var factRule = new Rule(p["a"]);
             
@@ -60,7 +60,7 @@ namespace Tests
         public void FactTest()
         {
             // Make a predicate p
-            var p = new TellPredicate<string>("p");
+            var p = new TELL.Predicate<string>("p");
 
             // assert that p(a) and p(b) are true and nothing else
             p["a"].Fact();
@@ -105,13 +105,13 @@ namespace Tests
         public void SubgoalTest()
         {
             // Make a predicate p
-            var p = new TellPredicate<string>("p");
+            var p = new TELL.Predicate<string>("p");
 
             // assert that p(a) and p(b) are true and nothing else
             p["a"].Fact();
             p["b"].Fact();
 
-            var q = new TellPredicate<string>("q");
+            var q = new TELL.Predicate<string>("q");
             var x = (Var<string>)"x";
             q[x].If(p[x]);
 
@@ -142,20 +142,20 @@ namespace Tests
         public void MultipleSubgoalTest()
         {
             // Make a predicate p
-            var p = new TellPredicate<string>("p");
+            var p = new TELL.Predicate<string>("p");
 
             // assert that p(a) and p(b) are true and nothing else
             p["a"].Fact();
             p["b"].Fact();
 
             // Make a predicate q
-            var q = new TellPredicate<string>("q");
+            var q = new TELL.Predicate<string>("q");
 
             // assert that p(a) and p(b) are true and nothing else
             q["c"].Fact();
             q["b"].Fact();
 
-            var r = new TellPredicate<string>("r");
+            var r = new TELL.Predicate<string>("r");
             var x = new Var<string>("x");
             r[x].If(p[x], q[x]);
 
@@ -191,7 +191,7 @@ namespace Tests
         public void DirectedAcyclicGraphTest()
         {
             // edge[x,y] means there's an edge from x to y in the graph
-            var edge = new TellPredicate<string, string>("edge");
+            var edge = new Predicate<string, string>("edge");
             // Add edges a->b, b->c, c->d
             edge["a", "b"].Fact();
             edge["b", "c"].Fact();
@@ -202,7 +202,7 @@ namespace Tests
             edge["x", "y"].Fact();
 
             // reachable[x,y] means there's a path from x to y in the graph
-            var reachable = new TellPredicate<string, string>("connected");
+            var reachable = new Predicate<string, string>("connected");
             var v = (Var<string>)"v";
             // An edge if reachable from itself
             reachable[v, v].Fact();

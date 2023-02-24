@@ -6,7 +6,7 @@ namespace TELL
     /// <summary>
     /// Base class of all Terms.  Terms are expressions representing arguments to predicates.
     /// </summary>
-    public abstract class AnyTerm
+    public abstract class Term
     {
         /// <summary>
         /// We use this rather than an "is" test because there's no way given the C# type system
@@ -23,12 +23,12 @@ namespace TELL
         /// See Rule.Instantiate for more info.
         /// </summary>
         /// <param name="vars">Variable mapping.  It's typed as AnyTerm because there's no base class for just the variables.</param>
-        public abstract object? Instantiate(Dictionary<AnyTerm,AnyTerm>? vars);
+        public abstract object? Instantiate(Dictionary<Term,Term>? vars);
 
         /// <summary>
         /// Used to clone variables; It's virtual method here because of typing issues.
         /// </summary>
-        public virtual AnyTerm Clone() =>
+        public virtual Term Clone() =>
             throw new NotImplementedException("Clone should only be called on variables, not constants");
     }
 
@@ -36,12 +36,16 @@ namespace TELL
     /// Base class for terms whose values are type T.
     /// </summary>
     /// <typeparam name="T">Type of the value of the variable</typeparam>
-    public abstract class Term<T> : AnyTerm
+    public abstract class Term<T> : Term
     {
         /// <summary>
         /// Automatically convert C# constant of type T to Constant terms
         /// </summary>
         /// <param name="value"></param>
         public static implicit operator Term<T>(T value) => new Constant<T>(value);
+
+        public static Goal operator ==(Term<T> t1, Term<T> t2) => Language.Same(t1, t2);
+
+        public static Goal operator !=(Term<T> t1, Term<T> t2) => Language.Different(t1, t2);
     }
 }

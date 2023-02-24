@@ -18,30 +18,30 @@ namespace TELL
         /// <summary>
         /// Goal that this rule can be used to prove
         /// </summary>
-        public readonly AnyGoal Head;
+        public readonly Goal Head;
         /// <summary>
         /// Subgoals that you have to prove in order to prove the Head
         /// </summary>
-        public readonly AnyGoal[] Body;
+        public readonly Goal[] Body;
         
         /// <summary>
         /// Saved list of all the variable names appearing in the Head and Body
         /// These are needed because every time we try this rule, we need to make a copy
         /// of it with fresh Variable objects.  Having this list makes the copying process easier
         /// </summary>
-        public readonly HashSet<AnyTerm> Variables = new HashSet<AnyTerm>();
+        public readonly HashSet<Term> Variables = new HashSet<Term>();
 
         /// <summary>
         /// Make a new rule for proving a goal
         /// </summary>
         /// <param name="head">Goal this can prove</param>
         /// <param name="body">Subgoals needed to prove the goal</param>
-        public Rule(AnyGoal head, params AnyGoal[] body)
+        public Rule(Goal head, params Goal[] body)
         {
             Head = head;
             Body = body;
 
-            void AddVars(AnyGoal g)
+            void AddVars(Goal g)
             {
                 foreach (var s in g.Arguments.Where(t=>t.IsVariable))
                     Variables.Add(s);
@@ -63,7 +63,7 @@ namespace TELL
         /// </summary>
         internal InstantiatedRule Instantiate()
         {
-            var variables = new Dictionary<AnyTerm,AnyTerm>();
+            var variables = new Dictionary<Term,Term>();
             foreach (var v in Variables)
                 variables[v] = v.Clone();
 

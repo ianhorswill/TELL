@@ -1,21 +1,21 @@
 ﻿using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TELL;
-using static TELL.Primitives;
+using static TELL.Language;
 
 namespace Tests
 {
     [TestClass]
     public class PrimitiveTests
     {
-        public void AssertTrue(AnyGoal g) => Assert.IsTrue(g.IsTrue);
-        public void AssertNot(AnyGoal g) => Assert.IsFalse(g.IsTrue);
+        public void AssertTrue(Goal g) => Assert.IsTrue(g.IsTrue);
+        public void AssertNot(Goal g) => Assert.IsFalse(g.IsTrue);
 
 
         [TestMethod]
         public void NotTest()
         {
-            var p = new TellPredicate<string>("p");
+            var p = new TELL.Predicate<string>("p");
             p["a"].Fact();
             AssertTrue(Not[p["b"]]);
             AssertNot(Not[p["a"]]);
@@ -36,7 +36,7 @@ namespace Tests
         {
             AssertTrue(Same<string>("a", "a"));
             AssertNot(Same<string>("a", "b"));
-            var same3 = new TellPredicate<string, string, string>("same3");
+            var same3 = new Predicate<string, string, string>("same3");
             var x = (Var<string>)"x";
             var y = (Var<string>)"y";
             var z = (Var<string>)"z";
@@ -46,7 +46,7 @@ namespace Tests
             AssertTrue(Same("foo", x));
             same3[x,y,z].If(Same(x,y), Same(y, z));
             Assert.AreEqual("a", same3["a", y, z].SolveFor(z));
-            var sameTest = new TellPredicate<string>("sameTest");
+            var sameTest = new TELL.Predicate<string>("sameTest");
             sameTest[x].If(Same(x,y), Same(y,"foo"));
             AssertTrue(sameTest["foo"]);
             AssertNot(sameTest["bar"]);
@@ -80,7 +80,7 @@ namespace Tests
 
         public void FunctionTest()
         {
-            var f = new Function<int, int>("inc", n => n+1);
+            var f = Predicate("inc", (int n) => n+1);
             var n = (Var<int>)"n";
             Assert.AreEqual(2, f[1, n].SolveFor(n));
             AssertTrue(f[1,2]);
@@ -95,44 +95,44 @@ namespace Tests
             // Special primitives
 
             // True when argument is a type defined in the TELL assembly.
-            var type = new TellPredicate<Type>("type", ModeDispatch<Type>("type",
+            var type = new TELL.Predicate<Type>("type", ModeDispatch<Type>("type",
                 // ReSharper disable once ConvertTypeCheckToNullCheck
                 x => x is Type,
-                () => Assembly.GetAssembly(typeof(AnyTerm))!.DefinedTypes));
+                () => Assembly.GetAssembly(typeof(Term))!.DefinedTypes));
             // True when that type has that field
-            var field = new TellPredicate<Type,FieldInfo>("field",
+            var field = new Predicate<Type,FieldInfo>("field",
                 ModeDispatch("field",
                     (t, f) => t.GetFields().Contains(f),
                     t => t.GetFields(),
                     t => new [] { t.DeclaringType! },
-                    () => Assembly.GetAssembly(typeof(AnyTerm))!.DefinedTypes.SelectMany(t => t.GetFields().Select(f => ((Type)t,f)))));
+                    () => Assembly.GetAssembly(typeof(Term))!.DefinedTypes.SelectMany(t => t.GetFields().Select(f => ((Type)t,f)))));
             // True when the name of the field is the string
-            var fieldName = new Function<FieldInfo, string>("fieldName", f => f.Name);
+            var fieldName = Predicate("fieldName", (FieldInfo f) => f.Name);
             // Type of the field
-            var fieldType = new Function<FieldInfo, Type>("fieldName", f => f.FieldType);
+            var fieldType = Predicate("fieldType", (FieldInfo f) => f.FieldType);
 
             // Predicate that finds types with a field named "Predicate"
-            var hasPredicateField = new TellPredicate<Type>("hasPredicateField");
+            var hasPredicateField = new TELL.Predicate<Type>("hasPredicateField");
             var t = (Var<Type>)"t";
             var f = (Var<FieldInfo>)"f";
             hasPredicateField[t].If(type[t], field[t, f], fieldName[f, "Predicate"]);
 
             // Find types that contain fields named Predicate
-            AssertTrue(hasPredicateField[typeof(AnyGoal)]);
+            AssertTrue(hasPredicateField[typeof(Goal)]);
             var typesWithPredicateField = hasPredicateField[t].SolveForAll(t);
             Assert.IsTrue(typesWithPredicateField.Count > 6);
-            Assert.IsTrue(typesWithPredicateField.Contains(typeof(AnyGoal)));
+            Assert.IsTrue(typesWithPredicateField.Contains(typeof(Goal)));
             Assert.IsTrue(typesWithPredicateField.Contains(typeof(InstantiatedGoal)));
 
             // Find types that contain fields of type AnyPredicate
-            var predicateContainers = And[type[t], field[t, f], fieldType[f, typeof(AnyPredicate)]].SolveForAll(t);
-            Assert.IsTrue(predicateContainers.Contains(typeof(AnyGoal)));
-            Assert.IsFalse(predicateContainers.Contains(typeof(AnyTerm)));
+            var predicateContainers = And[type[t], field[t, f], fieldType[f, typeof(Predicate)]].SolveForAll(t);
+            Assert.IsTrue(predicateContainers.Contains(typeof(Goal)));
+            Assert.IsFalse(predicateContainers.Contains(typeof(Term)));
 
             // Find types that contain fields of their own type
             var selfReferentialTypes = And[type[t], field[t, f], fieldType[f, t]].SolveForAll(t);
             Assert.IsTrue(selfReferentialTypes.Contains(typeof(Substitution)));
-            Assert.IsFalse(selfReferentialTypes.Contains(typeof(Primitives)));
+            Assert.IsFalse(selfReferentialTypes.Contains(typeof(Language)));
         }
     }
 }

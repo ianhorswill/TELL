@@ -50,7 +50,7 @@ namespace TELL
         /// <param name="variable">Variable to find a value for</param>
         /// <param name="value">Output argument to write the value to</param>
         /// <returns>True if the variable has a value in this substitution</returns>
-        public static bool Lookup(Substitution? substitution, AnyTerm variable, out object? value)
+        public static bool Lookup(Substitution? substitution, Term variable, out object? value)
         {
             while (substitution != null)
             {

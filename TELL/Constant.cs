@@ -25,7 +25,7 @@ namespace TELL
         public Constant(T value)
         {
             // If value is a Term then something has gone wrong with your typing
-            Debug.Assert(!(Value is AnyTerm));
+            Debug.Assert(!(Value is Term));
             Value = value;
         }
 
@@ -34,7 +34,7 @@ namespace TELL
         /// Just returns the value, unless the value is a goal, in which case we instantiate it.
         /// </summary>
         /// <param name="vars">Variable substitutions to perform.  Only relevant if T=AnyGoal</param>
-        public override object? Instantiate(Dictionary<AnyTerm,AnyTerm>? vars) => (Value is AnyGoal g)?(object)g.Instantiate(vars):Value;
+        public override object? Instantiate(Dictionary<Term,Term>? vars) => (Value is Goal g)?(object)g.Instantiate(vars):Value;
 
         public override string ToString()
         {

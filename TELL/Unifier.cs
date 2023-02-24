@@ -1,4 +1,6 @@
-﻿namespace TELL
+﻿using System;
+
+namespace TELL
 {
     /// <summary>
     /// Methods to implement unification of variables
@@ -17,10 +19,26 @@
         public static object? Dereference(object? constantOrVariable, Substitution? subst)
         {
             object? result = constantOrVariable;
-            while (result is AnyTerm v && v.IsVariable && Substitution.Lookup(subst, v, out var vValue)) 
+            while (result is Term v && v.IsVariable && Substitution.Lookup(subst, v, out var vValue)) 
                 result = vValue;
 
             return result;
+        }
+
+        public static T DereferenceToConstant<T>(object? constantOrVariable, Substitution? subst)
+        {
+            switch (Dereference(constantOrVariable, subst))
+            {
+                case T t: return t;
+                case Constant<T> c: return c.Value;  // In case we're called from Solutions, which can pass in the original term objects of the goal
+                case Term v:
+                    throw new Exception(
+                        $"Variable {v} should have been bound to a value of type {typeof(T).Name}, but was unbound");
+
+                default:
+                    throw new Exception(
+                        $"Value {constantOrVariable} should have been of type {typeof(T).Name}, but was not.");
+            }
         }
 
         /// <summary>
@@ -49,12 +67,12 @@
 
             if (a.Equals(b))
                 return true;
-            if (a is AnyTerm va && va.IsVariable)
+            if (a is Term va && va.IsVariable)
             {
                 unifyingSubst = new Substitution(va, b, subst);
                 return true;
             }
-            if (b is AnyTerm vb && vb.IsVariable)
+            if (b is Term vb && vb.IsVariable)
             {
                 unifyingSubst = new Substitution(vb, a, subst);
                 return true;

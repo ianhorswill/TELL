@@ -76,7 +76,32 @@ namespace TELL
         /// </summary>
         /// <param name="g">goal to prove</param>
         /// <returns>True if it was successful</returns>
-        public static bool CanProve(AnyGoal g) => g.Instantiate(null).Prove(null, _ => true);
+        public static bool CanProve(Goal g) => g.Instantiate(null).Prove(null, _ => true);
+
+        internal static T Solve<T>(Goal g, Func<Substitution?, T> outputFunc)
+        {
+            T result = default(T);
+            if (!g.Instantiate(null).Prove(null,
+                    b =>
+                    {
+                        result = outputFunc(b);
+                        return true;
+                    }))
+                throw new Exception($"Can't prove goal {g}");
+            return result;
+        }
+
+        internal static IEnumerable<T> SolveAll<T>(Goal g, Func<Substitution?, T> outputFunc)
+        {
+            var result = new List<T>();
+            g.Instantiate(null).Prove(null,
+                b =>
+                {
+                    result.Add(outputFunc(b));
+                    return false;
+                });
+            return result;
+        }
 
         /// <summary>
         /// Try to prove goal.  If successful, return the final value of the variable.  If not successful, throw an exception.
@@ -84,17 +109,17 @@ namespace TELL
         /// <param name="v">Variable to find the value of</param>
         /// <param name="g">Goal to try to prove; it should include the variable as one of its arguments.</param>
         /// <returns>Final value of the variable</returns>
-        public static T SolveFor<T>(Var<T> v, AnyGoal g)
+        public static T SolveFor<T>(Var<T> v, Goal g)
         {
             T result = default(T);
             if (!g.Instantiate(null).Prove(null,
                 b =>
                 {
                     // Remember solution
-                    result = (T)Unifier.Dereference(v, b)!;
+                    result = Unifier.DereferenceToConstant<T>(v, b)!;
                     return true;
                 }))
-                throw new Exception("Can't prove goal");
+                throw new Exception($"Can't prove goal {g}");
             return result!;
         }
 
@@ -104,15 +129,14 @@ namespace TELL
         /// <param name="v">Variable to find the value of</param>
         /// <param name="g">Goal to prove.  It should include the variable as an argument</param>
         /// <returns>List of all values of the variable for all solutions.  If there are no solutions, the list will be empty.</returns>
-        public static List<T> SolveForAll<T>(Var<T> v, AnyGoal g)
+        public static List<T> SolveForAll<T>(Var<T> v, Goal g)
         {
             var result = new List<T>();
             g.Instantiate(null).Prove(null,
                 b =>
                 {
                     // Remember this solution
-                    var dereferenced = Unifier.Dereference(v, b);
-                    result.Add((T)dereferenced!);
+                    result.Add(Unifier.DereferenceToConstant<T>(v, b)!);
                     // Force backtracking
                     return false;
                 });

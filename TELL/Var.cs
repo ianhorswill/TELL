@@ -40,9 +40,9 @@ namespace TELL
         /// <summary>
         /// Make a new variable with exactly the same name
         /// </summary>
-        public override AnyTerm Clone() => new Var<T>(Name);
+        public override Term Clone() => new Var<T>(Name);
 
-        public override object? Instantiate(Dictionary<AnyTerm,AnyTerm>? vars) => (vars == null)?this:vars[this];
+        public override object? Instantiate(Dictionary<Term,Term>? vars) => (vars == null)?this:vars[this];
 
         public override string ToString() => Name+SerialNumber;
 

@@ -10,10 +10,10 @@ namespace TELL
     [DebuggerDisplay("{DebugName}")]
     public readonly struct InstantiatedGoal
     {
-        public readonly AnyPredicate Predicate;
+        public readonly Predicate Predicate;
         public readonly object?[] Arguments;
 
-        public InstantiatedGoal(AnyPredicate predicate, object?[] arguments)
+        public InstantiatedGoal(Predicate predicate, object?[] arguments)
         {
             Predicate = predicate;
             Arguments = arguments;
