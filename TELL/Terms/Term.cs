@@ -30,6 +30,16 @@ namespace TELL
         /// </summary>
         public virtual Term Clone() =>
             throw new NotImplementedException("Clone should only be called on variables, not constants");
+
+        /// <summary>
+        /// Type of this term
+        /// </summary>
+        public abstract Type Type { get; }
+
+        /// <summary>
+        /// Make a variable of the same type as this term
+        /// </summary>
+        internal abstract Term MakeVariable(string name);
     }
 
     /// <summary>
@@ -47,5 +57,9 @@ namespace TELL
         public static Goal operator ==(Term<T> t1, Term<T> t2) => Language.Same(t1, t2);
 
         public static Goal operator !=(Term<T> t1, Term<T> t2) => Language.Different(t1, t2);
+
+        public override Type Type => typeof(T);
+
+        internal override Term MakeVariable(string name) => new Var<T>(name);
     }
 }

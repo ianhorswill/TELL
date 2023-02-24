@@ -29,6 +29,7 @@ namespace TELL
             Implementation = implementation;
             DefaultVariables = (defaultVariables != null && defaultVariables.Length>0)?defaultVariables:null;
             IsPrimitive = implementation != Prover.ProveUsingRules;
+            Program.MaybeAddPredicate(this);
         }
 
         protected Predicate(string name, Term[]? defaultVariables = null) : this(name, Prover.ProveUsingRules, defaultVariables)

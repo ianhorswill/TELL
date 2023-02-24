@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace TELL
 {
     [DebuggerDisplay("{DebugName}")]
-    public class Var<T> : Term<T>
+    public class Var<T> : Term<T>, IVariable
     {
         /// <summary>
         /// Make a new variable
@@ -47,5 +47,6 @@ namespace TELL
         public override string ToString() => Name+SerialNumber;
 
         public string DebugName => ToString();
+        public string VariableName => Name;
     }
 }

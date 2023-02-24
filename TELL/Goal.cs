@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -88,7 +89,9 @@ namespace TELL
         /// This is just so that this appears in human-readable form in the debugger
         /// </summary>
         public string DebugName => ToString();
+        #endregion
 
+        #region Solving
         public bool IsTrue => Prover.CanProve(this);
 
         public bool IsFalse => Prover.CanProve(this);
@@ -96,6 +99,7 @@ namespace TELL
         public T SolveFor<T>(Var<T> v) => Prover.SolveFor(v, this);
         public List<T> SolveForAll<T>(Var<T> v) => Prover.SolveForAll(v, this);
 
+        public abstract IEnumerable<object> SolutionsUntyped { get; }
         #endregion
     }
 
@@ -115,6 +119,8 @@ namespace TELL
 
         public IEnumerable<T1> Solutions =>
             Prover.SolveAll<T1>(this, b => Unifier.DereferenceToConstant<T1>(Arguments[0], b));
+
+        public override IEnumerable<object> SolutionsUntyped => Solutions.Cast<object>();
     }
 
     public class Goal<T1, T2> : Goal
@@ -127,6 +133,8 @@ namespace TELL
             Prover.SolveAll<(T1,T2)>(this, b =>
                 (Unifier.DereferenceToConstant<T1>(Arguments[0], b),
                     Unifier.DereferenceToConstant<T2>(Arguments[1], b)));
+
+        public override IEnumerable<object> SolutionsUntyped => Solutions.Cast<object>();
     }
 
     public class Goal<T1, T2, T3> : Goal
@@ -140,6 +148,8 @@ namespace TELL
                 (Unifier.DereferenceToConstant<T1>(Arguments[0], b),
                     Unifier.DereferenceToConstant<T2>(Arguments[1], b),
                     Unifier.DereferenceToConstant<T3>(Arguments[2], b)));
+
+        public override IEnumerable<object> SolutionsUntyped => Solutions.Cast<object>();
     }
 
     public class Goal<T1, T2, T3, T4> : Goal
@@ -154,6 +164,8 @@ namespace TELL
                     Unifier.DereferenceToConstant<T2>(Arguments[1], b),
                     Unifier.DereferenceToConstant<T3>(Arguments[2], b),
                     Unifier.DereferenceToConstant<T4>(Arguments[3], b)));
+
+        public override IEnumerable<object> SolutionsUntyped => Solutions.Cast<object>();
     }
 
     public class Goal<T1, T2, T3, T4, T5> : Goal
@@ -169,6 +181,8 @@ namespace TELL
                     Unifier.DereferenceToConstant<T3>(Arguments[2], b),
                     Unifier.DereferenceToConstant<T4>(Arguments[3], b),
                     Unifier.DereferenceToConstant<T5>(Arguments[4], b)));
+
+        public override IEnumerable<object> SolutionsUntyped => Solutions.Cast<object>();
     }
 
     public class Goal<T1, T2, T3, T4, T5, T6> : Goal
@@ -185,6 +199,8 @@ namespace TELL
                     Unifier.DereferenceToConstant<T4>(Arguments[3], b),
                     Unifier.DereferenceToConstant<T5>(Arguments[4], b),
                     Unifier.DereferenceToConstant<T6>(Arguments[5], b)));
+
+        public override IEnumerable<object> SolutionsUntyped => Solutions.Cast<object>();
     }
 
     public class VariadicGoal<T> : Goal
@@ -192,6 +208,14 @@ namespace TELL
         // ReSharper disable once CoVariantArrayConversion
         public VariadicGoal(Predicate predicate, Term<T>[] argList) : base(predicate, argList)
         {
+        }
+
+        public override IEnumerable<object> SolutionsUntyped
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 
