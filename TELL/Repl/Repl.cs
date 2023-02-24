@@ -5,11 +5,18 @@ namespace TELL.Repl
 {
     public class Repl
     {
+        public readonly Program Program;
         private readonly Parser parser;
+        public readonly Func<string, Term> ResolveConstant;
 
-        public Repl(Program program)
+        private static Term NullConstantResolver(string s) =>
+            throw new Exception($"Can't resolve ${s} because no resolver has been defined for $constants.");
+
+        public Repl(Program program, Func<string, Term>? resolveConstant = null)
         {
-            parser = new Parser(program);
+            Program = program;
+            ResolveConstant = resolveConstant??NullConstantResolver;
+            parser = new Parser(this);
         }
 
         public IEnumerable<object> Solutions(string goal)

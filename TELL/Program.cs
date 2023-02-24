@@ -4,7 +4,7 @@ namespace TELL
 {
     public class Program
     {
-        public static Program? Current;
+        public static Stack<Program> LoadingPrograms = new Stack<Program>();
 
         private readonly Dictionary<string, Predicate> predicates = new Dictionary<string, Predicate>();
         public readonly string Name;
@@ -14,8 +14,8 @@ namespace TELL
             Name = name;
         }
 
-        public void Begin() => Current = this;
-        public void End() => Current = null;
+        public void Begin() => LoadingPrograms.Push(this);
+        public void End() => LoadingPrograms.Pop();
 
         public Predicate this[string name] => predicates[name];
 
@@ -23,8 +23,8 @@ namespace TELL
 
         public static void MaybeAddPredicate(Predicate p)
         {
-            if (Program.Current != null)
-                Current.Add(p);
+            if (LoadingPrograms.Count>0)
+                LoadingPrograms.Peek().Add(p);
         }
 
         private void Add(Predicate predicate)

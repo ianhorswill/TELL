@@ -23,5 +23,19 @@ namespace Tests
             CollectionAssert.AreEqual(new object[] { "a", "b" },
                 new Repl(prog).Solutions("Foo[s]").ToArray());
         }
+
+        [TestMethod]
+        public void Externals()
+        {
+            var prog = new Program("EvalTest");
+            prog.Begin();
+            var s = (Var<string>)"s";
+            var Foo = Predicate("Foo", s);
+            Foo["a"].Fact();
+            Foo["b"].Fact();
+            prog.End();
+            CollectionAssert.AreEqual(new object[] { "a" },
+                new Repl(prog, _ =>new Constant<string>("a")).Solutions("Foo[$\"s\"]").ToArray());
+        }
     }
 }

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using static TELL.Repl.ParserState;
 
 namespace TELL.Repl
 {
     internal class Parser
     {
-        public readonly Program Program;
+        public readonly Repl Repl;
 
-        public Parser(Program program)
+        public Parser(Repl repl)
         {
-            Program = program;
+            Repl = repl;
         }
 
-        public Predicate PredicateNamed(string name) => Program.PredicateNamed(name);
+        public Predicate? PredicateNamed(string name) => Repl.Program.PredicateNamed(name);
         public static bool Identifier(ParserState s, Continuation<string> k) => s.ReadToken(char.IsLetter, k);
         public bool Predicate(ParserState s, Continuation<Predicate> k) => s.ReadToken(char.IsLetter, PredicateNamed, k);
 
@@ -29,8 +30,18 @@ namespace TELL.Repl
         public static bool Variable(ParserState s, Continuation<Term> k) 
             => s.ReadToken(char.IsLetter, str => (Var<object>) str, k);
 
-        public static bool Term(ParserState s, Continuation<Term> k)
-            => Number(s, k) || String(s, k) || Variable(s, k);
+        public bool Term(ParserState s, Continuation<Term> k)
+            => Number(s, k) || String(s, k) || Variable(s, k) || ExternalConstant(s,k);
+
+        private bool ExternalConstant(ParserState s, Continuation<Term> k)
+        {
+            return s.Match("$",
+                s2 => s2.ReadToken(char.IsLetter, (s3, str) => k(s3, Repl.ResolveConstant(str)))
+                      || s2.Match("\"",
+                          s3 => s3.ReadToken(c => c != '"',
+                              (s4, str) => s4.Match("\"",
+                                  s5 => k(s5, Repl.ResolveConstant(str))))));
+        }
 
         public bool Goal(ParserState s, SymbolTable vars, Continuation<Goal> k)
             => Predicate(s,
