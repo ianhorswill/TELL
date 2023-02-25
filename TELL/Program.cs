@@ -9,6 +9,18 @@ namespace TELL
         private readonly Dictionary<string, Predicate> predicates = new Dictionary<string, Predicate>();
         public readonly string Name;
 
+        private Repl.Repl? _repl;
+
+        public Repl.Repl Repl
+        {
+            get
+            {
+                if (_repl == null)
+                    _repl = new Repl.Repl(this);
+                return _repl;
+            }
+        }
+
         public Program(string name)
         {
             Name = name;

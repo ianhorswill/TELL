@@ -45,7 +45,9 @@ namespace TELL.Repl
 
         public bool Goal(ParserState s, SymbolTable vars, Continuation<Goal> k)
             => Predicate(s,
-                (s1, predicate) => s1.Match("[",
+                (s1, predicate) => 
+                  predicate != null 
+                  && s1.Match("[",
                     s2 => s2.DelimitedList<Term>(Term, ",",
                         (s3, args) => s3.Match("]",
                             s4 => k(s4, MakeGoal(predicate, args, vars))))));

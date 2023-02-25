@@ -7,7 +7,7 @@ namespace TELL.Repl
     {
         public readonly Program Program;
         private readonly Parser parser;
-        public readonly Func<string, Term> ResolveConstant;
+        public Func<string, Term> ResolveConstant;
 
         private static Term NullConstantResolver(string s) =>
             throw new Exception($"Can't resolve ${s} because no resolver has been defined for $constants.");

@@ -18,28 +18,22 @@ namespace TELL
         public readonly string Name;
         public readonly Prover.PredicateImplementation Implementation;
         public readonly bool IsPrimitive;
-        public readonly Term[]? DefaultVariables;
+        public readonly Term[] DefaultVariables;
 
         /// <summary>
         /// Make a new predicate
         /// </summary>
-        protected Predicate(string name, Prover.PredicateImplementation implementation, Term[]? defaultVariables)
+        protected Predicate(string name, Prover.PredicateImplementation implementation, params Term[] defaultVariables)
         {
             Name = name;
             Implementation = implementation;
-            DefaultVariables = (defaultVariables != null && defaultVariables.Length>0)?defaultVariables:null;
+            DefaultVariables = defaultVariables;
             IsPrimitive = implementation != Prover.ProveUsingRules;
             Program.MaybeAddPredicate(this);
         }
 
-        protected Predicate(string name, Term[]? defaultVariables = null) : this(name, Prover.ProveUsingRules, defaultVariables)
+        protected Predicate(string name, Term[] defaultVariables) : this(name, Prover.ProveUsingRules, defaultVariables)
         {
-        }
-
-        protected Predicate(string name, Prover.PredicateImplementation implementation) : this(name, implementation,
-            null)
-        {
-
         }
 
         /// <summary>
@@ -86,7 +80,7 @@ namespace TELL
         {
         }
 
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name)
         {
         }
 
@@ -117,7 +111,7 @@ namespace TELL
         {
         }
 
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name)
         {
         }
 
@@ -147,7 +141,7 @@ namespace TELL
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name)
         {
         }
 
@@ -178,7 +172,7 @@ namespace TELL
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name)
         {
         }
 
@@ -209,7 +203,7 @@ namespace TELL
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name, (Var<T5>)typeof(T5).Name)
         {
         }
 
@@ -241,7 +235,7 @@ namespace TELL
         {
         }
 
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name, (Var<T5>)typeof(T5).Name, (Var<T6>)typeof(T6).Name)
         {
         }
 
