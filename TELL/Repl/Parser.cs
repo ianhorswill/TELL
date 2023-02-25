@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using static TELL.Repl.ParserState;
 
 namespace TELL.Repl
@@ -14,7 +16,7 @@ namespace TELL.Repl
             Repl = repl;
         }
 
-        public Predicate? PredicateNamed(string name) => Repl.Program.PredicateNamed(name);
+        public Predicate? PredicateNamed(string name) => Repl.Program.PredicateNamed(name)??throw new Exception($"No predicate named {name}");
         public static bool Identifier(ParserState s, Continuation<string> k) => s.ReadToken(char.IsLetter, k);
         public bool Predicate(ParserState s, Continuation<Predicate> k) => s.ReadToken(char.IsLetter, PredicateNamed, k);
 
@@ -45,12 +47,15 @@ namespace TELL.Repl
 
         public bool Goal(ParserState s, SymbolTable vars, Continuation<Goal> k)
             => Predicate(s,
-                (s1, predicate) => 
-                  predicate != null 
-                  && s1.Match("[",
-                    s2 => s2.DelimitedList<Term>(Term, ",",
-                        (s3, args) => s3.Match("]",
-                            s4 => k(s4, MakeGoal(predicate, args, vars))))));
+                   (s1, predicate) => 
+                       s1.Match("[",
+                           s2 => s2.DelimitedList<Term>(Term, ",",
+                               (s3, args) => s3.Match("]",
+                                   s4 => k(s4, MakeGoal(predicate, args, vars))))))
+                        || s.Match("!", s5 => Goal(s5.SkipWhitespace(), vars, (s6, g) => k(s6, !g)));
+
+        public bool Body(ParserState s, SymbolTable vars, Continuation<List<Goal>> k)
+            => s.DelimitedList((gs, gk) => Goal(gs, vars, gk), ",", k); 
 
         public Goal MakeGoal(Predicate p, List<Term> args, SymbolTable vars)
         {
@@ -73,6 +78,7 @@ namespace TELL.Repl
         public class SymbolTable
         {
             private readonly Dictionary<string, Term> VariableTable = new Dictionary<string, Term>();
+            public List<Term> VariablesInOrder = new List<Term>();
 
             /// <summary>
             /// Get the variable with this name, if one has already been made.  Otherwise, make one of the same type as defaultArg.
@@ -86,6 +92,7 @@ namespace TELL.Repl
                 {
                     variable = defaultArg.MakeVariable(name);
                     VariableTable[name] = variable;
+                    VariablesInOrder.Add(variable);
                 }
                 return variable;
             }

@@ -42,6 +42,13 @@ namespace TELL.Repl
 
         public bool SkipWhitespace(Continuation k) => Skip(char.IsWhiteSpace, k);
 
+        public ParserState SkipWhitespace()
+        {
+            int i;
+            for (i = Position; i < Text.Length && char.IsWhiteSpace(Text[i]); i++) ;
+            return new ParserState(Text, i);
+        }
+
         public bool ReadToken(System.Predicate<char> test, Continuation<string> k, bool allowEmpty = false)
         {
             int i;
