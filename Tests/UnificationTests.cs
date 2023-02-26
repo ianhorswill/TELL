@@ -1,7 +1,7 @@
-using System;
 using TELL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static TELL.Unifier;
+using static TELL.Interpreter.Unifier;
+using TELL.Interpreter;
 
 namespace Tests
 {

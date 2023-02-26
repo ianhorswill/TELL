@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace TELL
+namespace TELL.Interpreter
 {
     /// <summary>
     /// A copy of a Rule made for a specific call to that rule.

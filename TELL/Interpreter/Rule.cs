@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace TELL
+namespace TELL.Interpreter
 {
     /// <summary>
     /// An if/then rule that can be used to prove a predicate.
@@ -23,7 +23,7 @@ namespace TELL
         /// Subgoals that you have to prove in order to prove the Head
         /// </summary>
         public readonly Goal[] Body;
-        
+
         /// <summary>
         /// Saved list of all the variable names appearing in the Head and Body
         /// These are needed because every time we try this rule, we need to make a copy
@@ -43,7 +43,7 @@ namespace TELL
 
             void AddVars(Goal g)
             {
-                foreach (var s in g.Arguments.Where(t=>t.IsVariable))
+                foreach (var s in g.Arguments.Where(t => t.IsVariable))
                     Variables.Add(s);
             }
 
@@ -63,7 +63,7 @@ namespace TELL
         /// </summary>
         internal InstantiatedRule Instantiate()
         {
-            var variables = new Dictionary<Term,Term>();
+            var variables = new Dictionary<Term, Term>();
             foreach (var v in Variables)
                 variables[v] = v.Clone();
 
@@ -80,7 +80,7 @@ namespace TELL
         /// This is just here so the Debugger knows how to display the rule in human-readable format.
         /// </summary>
         public string DebugName => ToString();
-        
+
         /// <summary>
         /// Convert the rule to a human-readable string
         /// </summary>
@@ -90,7 +90,7 @@ namespace TELL
             ToString(b);
             return b.ToString();
         }
-        
+
         /// <summary>
         /// Print the rule in human-readable format to the StringBuilder
         /// </summary>

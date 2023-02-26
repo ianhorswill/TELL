@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TELL
+namespace TELL.Interpreter
 {
     /// <summary>
     /// Implements the algorithm for proving Goals using Rules
@@ -80,7 +80,7 @@ namespace TELL
 
         internal static T Solve<T>(Goal g, Func<Substitution?, T> outputFunc)
         {
-            T result = default(T);
+            T result = default;
             if (!g.Instantiate(null).Prove(null,
                     b =>
                     {
@@ -88,7 +88,7 @@ namespace TELL
                         return true;
                     }))
                 throw new Exception($"Can't prove goal {g}");
-            return result;
+            return result!;
         }
 
         internal static IEnumerable<T> SolveAll<T>(Goal g, Func<Substitution?, T> outputFunc)
@@ -111,7 +111,7 @@ namespace TELL
         /// <returns>Final value of the variable</returns>
         public static T SolveFor<T>(Var<T> v, Goal g)
         {
-            T result = default(T);
+            T result = default;
             if (!g.Instantiate(null).Prove(null,
                 b =>
                 {

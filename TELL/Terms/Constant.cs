@@ -5,6 +5,8 @@ namespace TELL
 {
     /// <summary>
     /// Terms that represent constants of type T
+    /// These always have the same value every time the code is run, as opposed to Vars, where they
+    /// have to be looked up at runtime in the binding list.
     /// </summary>
     internal class Constant<T> : Term<T>
     {
@@ -35,7 +37,8 @@ namespace TELL
         /// </summary>
         /// <param name="vars">Variable substitutions to perform.  Only relevant if T=AnyGoal</param>
         public override object? Instantiate(Dictionary<Term,Term>? vars) => (Value is Goal g)?(object)g.Instantiate(vars):Value;
-
+        
+        /// <inheritdoc />
         public override string ToString()
         {
             switch (Value)

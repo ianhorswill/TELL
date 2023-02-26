@@ -18,7 +18,7 @@ namespace TELL.Repl
 
         public Predicate? PredicateNamed(string name) => Repl.Program.PredicateNamed(name)??throw new Exception($"No predicate named {name}");
         public static bool Identifier(ParserState s, Continuation<string> k) => s.ReadToken(char.IsLetter, k);
-        public bool Predicate(ParserState s, Continuation<Predicate> k) => s.ReadToken(char.IsLetter, PredicateNamed, k);
+        public bool Predicate(ParserState s, Continuation<Predicate> k) => s.ReadToken(char.IsLetter, PredicateNamed, k!);
 
         public static bool Number(ParserState s, Continuation<Term> k)
             => s.ReadToken(char.IsDigit, (s, digits) => k(s, new Constant<int>(int.Parse(digits))));

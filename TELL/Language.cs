@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TELL.Prover;
+using TELL.Interpreter;
+using static TELL.Interpreter.Prover;
 
 namespace TELL
 {

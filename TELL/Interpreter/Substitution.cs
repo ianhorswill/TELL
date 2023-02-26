@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-namespace TELL
+namespace TELL.Interpreter
 {
     /// <summary>
     /// Represents a substitution of values for Variables.  It's basically just a dictionary.
@@ -69,6 +69,7 @@ namespace TELL
 
         private string DebugName => ToString();
 
+        /// <inheritdoc />
         public override string ToString()
         {
             var b = new StringBuilder();

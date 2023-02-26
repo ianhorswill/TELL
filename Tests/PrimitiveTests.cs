@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TELL;
+using TELL.Interpreter;
 using static TELL.Language;
 
 namespace Tests

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TELL
+namespace TELL.Interpreter
 {
     /// <summary>
     /// Methods to implement unification of variables
@@ -19,12 +19,20 @@ namespace TELL
         public static object? Dereference(object? constantOrVariable, Substitution? subst)
         {
             object? result = constantOrVariable;
-            while (result is Term v && v.IsVariable && Substitution.Lookup(subst, v, out var vValue)) 
+            while (result is Term v && v.IsVariable && Substitution.Lookup(subst, v, out var vValue))
                 result = vValue;
 
             return result;
         }
 
+        /// <summary>
+        /// Find the value of the first argument given the substitution, and cast it to the specified type
+        /// </summary>
+        /// <typeparam name="T">Expected type</typeparam>
+        /// <param name="constantOrVariable">Value to dereference</param>
+        /// <param name="subst">Substitution</param>
+        /// <returns>Value</returns>
+        /// <exception cref="Exception">If value is of the wrong type or is an unbound variable</exception>
         public static T DereferenceToConstant<T>(object? constantOrVariable, Substitution? subst)
         {
             switch (Dereference(constantOrVariable, subst))

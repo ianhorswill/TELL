@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TELL.Interpreter;
+using static TELL.Interpreter.Prover;
 
 namespace TELL
 {
@@ -16,23 +18,42 @@ namespace TELL
         /// Human-readable name for this predicate
         /// </summary>
         public readonly string Name;
-        public readonly Prover.PredicateImplementation Implementation;
+
+        /// <summary>
+        /// Code to call when trying to prove a goal involving this predicate
+        /// </summary>
+        public readonly PredicateImplementation Implementation;
+
+        /// <summary>
+        /// If true, this is a predicate directly implemented in C#/MSIL.  If false, it's defined by rules.
+        /// </summary>
         public readonly bool IsPrimitive;
+
+        /// <summary>
+        /// Arguments to use for the goal is you say Predicate.If(body)
+        /// For primitive predicates, which also gives the REPL a way of knowing the predicate's
+        /// expected argument types.
+        /// </summary>
         public readonly Term[] DefaultVariables;
 
         /// <summary>
         /// Make a new predicate
         /// </summary>
-        protected Predicate(string name, Prover.PredicateImplementation implementation, params Term[] defaultVariables)
+        protected Predicate(string name, PredicateImplementation implementation, params Term[] defaultVariables)
         {
             Name = name;
             Implementation = implementation;
             DefaultVariables = defaultVariables;
-            IsPrimitive = implementation != Prover.ProveUsingRules;
+            IsPrimitive = implementation != ProveUsingRules;
             Program.MaybeAddPredicate(this);
         }
 
-        protected Predicate(string name, Term[] defaultVariables) : this(name, Prover.ProveUsingRules, defaultVariables)
+        /// <summary>
+        /// Make a new predicate to be defined in terms of rules.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="defaultVariables"></param>
+        protected Predicate(string name, Term[] defaultVariables) : this(name, ProveUsingRules, defaultVariables)
         {
         }
 
@@ -54,6 +75,11 @@ namespace TELL
 
         //public Goal this[params Term[] args] => GetGoal(args);
         
+        /// <summary>
+        /// Make a goal (call) to this predicate given an array of arguments
+        /// </summary>
+        /// <param name="args">Term expressions for the arguments</param>
+        /// <returns>Goal object</returns>
         public abstract Goal GetGoal(Term[] args);
     }
     //
@@ -62,6 +88,10 @@ namespace TELL
     // They're called TellPredicate to about name collision with System.Predicate.
     //
 
+    /// <summary>
+    /// Single-argument predicate
+    /// </summary>
+    /// <typeparam name="T1">Type of the predicate's argument</typeparam>
     public class Predicate<T1> : Predicate
     {
         /// <summary>
@@ -69,6 +99,7 @@ namespace TELL
         /// </summary>
         public Goal<T1> this[Term<T1> arg1] => new Goal<T1>(this, arg1);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args)
         {
             if (args.Length != 1)
@@ -76,14 +107,26 @@ namespace TELL
             return this[(Term<T1>)args[0]];
         }
 
+        /// <summary>
+        /// Make a predicate for use with rules
+        /// </summary>
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
 
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name)
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public Predicate(string name, PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name)
         {
         }
 
+        /// <summary>
+        /// Add a rule to the predicate, using the default arguments as the rule's head (i.e. goal
+        /// </summary>
+        /// <param name="body">Subgoals to call to prove the head goal</param>
+        /// <returns>Original predicate</returns>
+        /// <exception cref="InvalidOperationException">If this is a primitive predicate</exception>
         public Predicate<T1> If(params Goal[] body)
         {
             if (DefaultVariables == null)
@@ -93,6 +136,11 @@ namespace TELL
         }
     }
 
+    /// <summary>
+    /// Two-argument predicate
+    /// </summary>
+    /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+    /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
     public class Predicate<T1, T2> : Predicate
     {
         /// <summary>
@@ -100,6 +148,7 @@ namespace TELL
         /// </summary>
         public Goal<T1, T2> this[Term<T1> arg1, Term<T2> arg2] => new Goal<T1, T2>(this, arg1, arg2);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args)
         {
             if (args.Length != 2)
@@ -107,14 +156,26 @@ namespace TELL
             return this[(Term<T1>)args[0], (Term<T2>)args[1]];
         }
 
+        /// <summary>
+        /// Make a predicate for use with rules
+        /// </summary>
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
 
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name)
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public Predicate(string name, PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name)
         {
         }
 
+        /// <summary>
+        /// Add a rule to the predicate, using the default arguments as the rule's head (i.e. goal
+        /// </summary>
+        /// <param name="body">Subgoals to call to prove the head goal</param>
+        /// <returns>Original predicate</returns>
+        /// <exception cref="InvalidOperationException">If this is a primitive predicate</exception>
         public Predicate<T1,T2> If(params Goal[] body)
         {
             if (DefaultVariables == null)
@@ -124,6 +185,12 @@ namespace TELL
         }
     }
 
+    /// <summary>
+    /// Three-argument predicate
+    /// </summary>
+    /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+    /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+    /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
     public class Predicate<T1, T2, T3> : Predicate
     {
         /// <summary>
@@ -131,6 +198,7 @@ namespace TELL
         /// </summary>
         public Goal<T1, T2, T3> this[Term<T1> arg1, Term<T2> arg2, Term<T3> arg3] => new Goal<T1, T2, T3>(this, arg1, arg2,arg3);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args)
         {
             if (args.Length != 3)
@@ -138,13 +206,26 @@ namespace TELL
             return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2]];
         }
 
+        /// <summary>
+        /// Make a predicate for use with rules
+        /// </summary>
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name)
+        
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public Predicate(string name, PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name)
         {
         }
 
+        /// <summary>
+        /// Add a rule to the predicate, using the default arguments as the rule's head (i.e. goal
+        /// </summary>
+        /// <param name="body">Subgoals to call to prove the head goal</param>
+        /// <returns>Original predicate</returns>
+        /// <exception cref="InvalidOperationException">If this is a primitive predicate</exception>
         public Predicate<T1,T2,T3> If(params Goal[] body)
         {
             if (DefaultVariables == null)
@@ -154,6 +235,13 @@ namespace TELL
         }
     }
 
+    /// <summary>
+    /// Four-argument predicate
+    /// </summary>
+    /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+    /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+    /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+    /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
     public class Predicate<T1, T2, T3, T4> : Predicate
     {
         /// <summary>
@@ -162,6 +250,7 @@ namespace TELL
         public Goal<T1, T2, T3, T4> this[Term<T1> arg1, Term<T2> arg2, Term<T3> arg3, Term<T4> arg4] 
             => new Goal<T1, T2, T3, T4>(this, arg1, arg2,arg3, arg4);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args)
         {
             if (args.Length != 4)
@@ -169,13 +258,26 @@ namespace TELL
             return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2], (Term<T4>)args[3]];
         }
 
+        /// <summary>
+        /// Make a predicate for use with rules
+        /// </summary>
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name)
+        
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public Predicate(string name, PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name)
         {
         }
 
+        /// <summary>
+        /// Add a rule to the predicate, using the default arguments as the rule's head (i.e. goal
+        /// </summary>
+        /// <param name="body">Subgoals to call to prove the head goal</param>
+        /// <returns>Original predicate</returns>
+        /// <exception cref="InvalidOperationException">If this is a primitive predicate</exception>
         public Predicate<T1,T2,T3,T4> If(params Goal[] body)
         {
             if (DefaultVariables == null)
@@ -185,6 +287,14 @@ namespace TELL
         }
     }
 
+    /// <summary>
+    /// Five-argument predicate
+    /// </summary>
+    /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+    /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+    /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+    /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+    /// <typeparam name="T5">Type of the predicate's fifth argument</typeparam>
     public class Predicate<T1, T2, T3, T4, T5> : Predicate
     {
         /// <summary>
@@ -193,6 +303,7 @@ namespace TELL
         public Goal<T1, T2, T3, T4, T5> this[Term<T1> arg1, Term<T2> arg2, Term<T3> arg3, Term<T4> arg4, Term<T5> arg5] 
             => new Goal<T1, T2, T3, T4, T5>(this, arg1, arg2,arg3, arg4, arg5);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args)
         {
             if (args.Length != 5)
@@ -200,13 +311,26 @@ namespace TELL
             return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2], (Term<T4>)args[3], (Term<T5>)args[4]];
         }
 
+        /// <summary>
+        /// Make a predicate for use with rules
+        /// </summary>
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name, (Var<T5>)typeof(T5).Name)
+        
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public Predicate(string name, PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name, (Var<T5>)typeof(T5).Name)
         {
         }
 
+        /// <summary>
+        /// Add a rule to the predicate, using the default arguments as the rule's head (i.e. goal
+        /// </summary>
+        /// <param name="body">Subgoals to call to prove the head goal</param>
+        /// <returns>Original predicate</returns>
+        /// <exception cref="InvalidOperationException">If this is a primitive predicate</exception>
         public Predicate<T1,T2,T3,T4,T5> If(params Goal[] body)
         {
             if (DefaultVariables == null)
@@ -216,6 +340,15 @@ namespace TELL
         }
     }
 
+    /// <summary>
+    /// Six-argument predicate
+    /// </summary>
+    /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+    /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+    /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+    /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+    /// <typeparam name="T5">Type of the predicate's fifth argument</typeparam>
+    /// <typeparam name="T6">Type of the predicate's sixth argument</typeparam>
     public class Predicate<T1, T2, T3, T4, T5, T6> : Predicate
     {
         /// <summary>
@@ -224,6 +357,7 @@ namespace TELL
         public Goal<T1, T2, T3, T4, T5, T6> this[Term<T1> arg1, Term<T2> arg2, Term<T3> arg3, Term<T4> arg4, Term<T5> arg5, Term<T6> arg6] 
             => new Goal<T1, T2, T3, T4, T5, T6>(this, arg1, arg2,arg3, arg4, arg5, arg6);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args)
         {
             if (args.Length != 6)
@@ -231,14 +365,26 @@ namespace TELL
             return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2], (Term<T4>)args[3], (Term<T5>)args[4], (Term<T6>)args[5]];
         }
 
+        /// <summary>
+        /// Make a predicate for use with rules
+        /// </summary>
         public Predicate(string name, params Term[] args) : base(name, args)
         {
         }
 
-        public Predicate(string name, Prover.PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name, (Var<T5>)typeof(T5).Name, (Var<T6>)typeof(T6).Name)
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public Predicate(string name, PredicateImplementation i) : base(name, i, (Var<T1>)typeof(T1).Name, (Var<T2>)typeof(T2).Name, (Var<T3>)typeof(T3).Name, (Var<T4>)typeof(T4).Name, (Var<T5>)typeof(T5).Name, (Var<T6>)typeof(T6).Name)
         {
         }
 
+        /// <summary>
+        /// Add a rule to the predicate, using the default arguments as the rule's head (i.e. goal
+        /// </summary>
+        /// <param name="body">Subgoals to call to prove the head goal</param>
+        /// <returns>Original predicate</returns>
+        /// <exception cref="InvalidOperationException">If this is a primitive predicate</exception>
         public Predicate<T1,T2,T3,T4,T5,T6> If(params Goal[] body)
         {
             if (DefaultVariables == null)
@@ -248,6 +394,10 @@ namespace TELL
         }
     }
 
+    /// <summary>
+    /// A predicate that takes a variable number of arguments, all of which are type T.
+    /// </summary>
+    /// <typeparam name="T">Type of the predicate's arguments</typeparam>
     public class VariadicPredicate<T> : Predicate
     {
         /// <summary>
@@ -255,9 +405,13 @@ namespace TELL
         /// </summary>
         public VariadicGoal<T> this[params Term<T>[] args] => new VariadicGoal<T>(this, args);
 
+        /// <inheritdoc />
         public override Goal GetGoal(Term[] args) => this[args.Cast<Term<T>>().ToArray()];
 
-        public VariadicPredicate(string name, Prover.PredicateImplementation i) : base(name, i)
+        /// <summary>
+        /// Make a new primitive predicate
+        /// </summary>
+        public VariadicPredicate(string name, PredicateImplementation i) : base(name, i)
         {
         }
     }

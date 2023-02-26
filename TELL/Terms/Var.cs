@@ -3,6 +3,12 @@ using System.Diagnostics;
 
 namespace TELL
 {
+    /// <summary>
+    /// A variable in a TELL rule.
+    /// These are the objects stored in a Rule or Predicate when an argument is a variable.
+    /// They are also used as keys Substitutions, which map Vars to their run-time values.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [DebuggerDisplay("{DebugName}")]
     public class Var<T> : Term<T>, IVariable
     {
@@ -33,8 +39,15 @@ namespace TELL
         /// </summary>
         public int SerialNumber = SerialNumberCounter++;
 
+        /// <summary>
+        /// Yes, this is a variable
+        /// </summary>
         public override bool IsVariable => true;
         
+        /// <summary>
+        /// Slightly less cumbersome way of making a variable
+        /// </summary>
+        /// <param name="s"></param>
         public static explicit operator Var<T>(string s) => new Var<T>(s);
 
         /// <summary>
@@ -42,11 +55,17 @@ namespace TELL
         /// </summary>
         public override Term Clone() => new Var<T>(Name);
 
+        /// <inheritdoc />
         public override object? Instantiate(Dictionary<Term,Term>? vars) => (vars == null)?this:vars[this];
 
+        /// <inheritdoc />
         public override string ToString() => Name+SerialNumber;
 
-        public string DebugName => ToString();
+        private string DebugName => ToString();
+
+        /// <summary>
+        /// Used through the IVariable interface to get the name of the variable when you don't know its type
+        /// </summary>
         public string VariableName => Name;
     }
 }
