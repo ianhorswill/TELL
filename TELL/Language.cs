@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices.ComTypes;
 using static TELL.Prover;
 
 namespace TELL
@@ -12,92 +11,435 @@ namespace TELL
     /// </summary>
     public static class Language
     {
+        /// <summary>
+        /// Change a C# value into a constant term.  All arguments to goals have to be passed as terms.
+        /// Normally, C# values are converted to terms automatically by implicit conversions, but once in
+        /// a while, C# type inference fails and you have to do it manually.
+        /// </summary>
+        /// <typeparam name="T">Type of the term</typeparam>
+        /// <param name="value">Value to be passed to the predicate</param>
+        /// <returns></returns>
         public static Term<T> Constant<T>(T value) => new Constant<T>(value);
 
         #region Convenience functions
+        /// <summary>
+        /// Make a new predicate to be defined by a set of If() rules.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="v">Variable representing the first argument.</param>
         public static Predicate<T1> Predicate<T1>(string name, Var<T1> v) => new Predicate<T1>(name, v);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a set of If() rules.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="v1">Variable representing the first argument.</param>
+        /// <param name="v2">Variable representing the second argument.</param>
         public static Predicate<T1,T2> Predicate<T1,T2>(string name, Var<T1> v1, Var<T2> v2)
             => new Predicate<T1,T2>(name, v1, v2);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a set of If() rules.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="v1">Variable representing the first argument.</param>
+        /// <param name="v2">Variable representing the second argument.</param>
+        /// <param name="v3">Variable representing the third argument.</param>
         public static Predicate<T1,T2,T3> Predicate<T1,T2,T3>(string name, Var<T1> v1, Var<T2> v2, Var<T3> v3) 
             => new Predicate<T1,T2,T3>(name, v1, v2,v3);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a set of If() rules.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="v1">Variable representing the first argument.</param>
+        /// <param name="v2">Variable representing the second argument.</param>
+        /// <param name="v3">Variable representing the third argument.</param>
+        /// <param name="v4">Variable representing the fourth argument.</param>
         public static Predicate<T1,T2,T3,T4> Predicate<T1,T2,T3,T4>(string name, Var<T1> v1, Var<T2> v2, Var<T3> v3, Var<T4> v4) 
             => new Predicate<T1,T2,T3,T4>(name, v1, v2, v3, v4);
         
+        /// <summary>
+        /// Make a new predicate to be defined by a set of If() rules.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="T5">Type of the predicate's fifth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="v1">Variable representing the first argument.</param>
+        /// <param name="v2">Variable representing the second argument.</param>
+        /// <param name="v3">Variable representing the third argument.</param>
+        /// <param name="v4">Variable representing the fourth argument.</param>
+        /// <param name="v5">Variable representing the fifth argument.</param>
         public static Predicate<T1,T2,T3,T4,T5> Predicate<T1,T2,T3,T4,T5>(string name, Var<T1> v1, Var<T2> v2, Var<T3> v3, Var<T4> v4, Var<T5> v5) 
             => new Predicate<T1,T2,T3,T4,T5>(name, v1, v2, v3, v4, v5);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a set of If() rules.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="T5">Type of the predicate's fifth argument</typeparam>
+        /// <typeparam name="T6">Type of the predicate's fifth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="v1">Variable representing the first argument.</param>
+        /// <param name="v2">Variable representing the second argument.</param>
+        /// <param name="v3">Variable representing the third argument.</param>
+        /// <param name="v4">Variable representing the fourth argument.</param>
+        /// <param name="v5">Variable representing the fifth argument.</param>
+        /// <param name="v6">Variable representing the sixth argument.</param>
         public static Predicate<T1,T2,T3,T4,T5,T6> Predicate<T1,T2,T3,T4,T5,T6>(string name, Var<T1> v1, Var<T2> v2, Var<T3> v3, Var<T4> v4, Var<T5> v5, Var<T6> v6) 
             => new Predicate<T1,T2,T3,T4,T5,T6>(name, v1, v2, v3, v4, v5, v6);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a continuation-passing C# method.
+        /// This is the most complicated, but most general way to make a primitive predicate.
+        /// If you're implementing a simple function or enumerator, use one of specialized methods
+        /// for implementing those.  Otherwise, it's easier to make an implementation function by
+        /// calling the ModeDispatch function.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="implementation">C# code that implements the driver for this predicate</param>
         public static Predicate<T1> Predicate<T1>(string name, PredicateImplementation implementation) =>
             new Predicate<T1>(name, implementation);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a continuation-passing C# method.
+        /// This is the most complicated, but most general way to make a primitive predicate.
+        /// If you're implementing a simple function or enumerator, use one of specialized methods
+        /// for implementing those.  Otherwise, it's easier to make an implementation function by
+        /// calling the ModeDispatch function.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="implementation">C# code that implements the driver for this predicate</param>
         public static Predicate<T1,T2> Predicate<T1,T2>(string name, PredicateImplementation implementation) =>
             new Predicate<T1,T2>(name, implementation);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a continuation-passing C# method.
+        /// This is the most complicated, but most general way to make a primitive predicate.
+        /// If you're implementing a simple function or enumerator, use one of specialized methods
+        /// for implementing those.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="implementation">C# code that implements the driver for this predicate</param>
         public static Predicate<T1,T2,T3> Predicate<T1,T2,T3>(string name, PredicateImplementation implementation) =>
             new Predicate<T1,T2,T3>(name, implementation);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a continuation-passing C# method.
+        /// This is the most complicated, but most general way to make a primitive predicate.
+        /// If you're implementing a simple function or enumerator, use one of specialized methods
+        /// for implementing those.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="implementation">C# code that implements the driver for this predicate</param>
         public static Predicate<T1,T2,T3,T4> Predicate<T1,T2,T3,T4>(string name, PredicateImplementation implementation) =>
             new Predicate<T1,T2,T3,T4>(name, implementation);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a continuation-passing C# method.
+        /// This is the most complicated, but most general way to make a primitive predicate.
+        /// If you're implementing a simple function or enumerator, use one of specialized methods
+        /// for implementing those.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="T5">Type of the predicate's fifth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="implementation">C# code that implements the driver for this predicate</param>
         public static Predicate<T1,T2,T3,T4,T5> Predicate<T1,T2,T3,T4,T5>(string name, PredicateImplementation implementation) =>
             new Predicate<T1,T2,T3,T4,T5>(name, implementation);
 
+        /// <summary>
+        /// Make a new predicate to be defined by a continuation-passing C# method.
+        /// This is the most complicated, but most general way to make a primitive predicate.
+        /// If you're implementing a simple function or enumerator, use one of specialized methods
+        /// for implementing those.
+        /// </summary>
+        /// <typeparam name="T1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="T2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="T3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="T4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="T5">Type of the predicate's fifth argument</typeparam>
+        /// <typeparam name="T6">Type of the predicate's fifth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="implementation">C# code that implements the driver for this predicate</param>
         public static Predicate<T1,T2,T3,T4,T5,T6> Predicate<T1,T2,T3,T4,T5,T6>(string name, PredicateImplementation implementation) =>
             new Predicate<T1,T2,T3,T4,T5,T6>(name, implementation);
 
-        public static Predicate<TOut> Predicate<TOut>(string name, Enumerator<TOut> func)
-            => Predicate<TOut>(name, EnumeratorWrapper(func));
-
+        /// <summary>
+        /// Make a new predicate defined by a C# Boolean function.
+        /// This predicate cannot be used to enumerate argument values that makes it true; it must be called
+        /// with all its inputs defined
+        /// </summary>
+        /// <typeparam name="TIn">Type of the predicate's first argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn> Predicate<TIn>(string name, SimpleTest<TIn> func)
             => Predicate<TIn>(name, TestWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# Boolean function.
+        /// This predicate cannot be used to enumerate argument values that makes it true; it must be called
+        /// with all its inputs defined
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2> Predicate<TIn1, TIn2>(string name, SimpleTest<TIn1, TIn2> func)
             => Predicate<TIn1, TIn2>(name, TestWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# Boolean function.
+        /// This predicate cannot be used to enumerate argument values that makes it true; it must be called
+        /// with all its inputs defined
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3> Predicate<TIn1, TIn2, TIn3>(string name, SimpleTest<TIn1, TIn2, TIn3> func)
             => Predicate<TIn1, TIn2, TIn3>(name, TestWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# Boolean function.
+        /// This predicate cannot be used to enumerate argument values that makes it true; it must be called
+        /// with all its inputs defined
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4> Predicate<TIn1, TIn2, TIn3, TIn4>(string name, SimpleTest<TIn1, TIn2, TIn3, TIn4> func)
             => Predicate<TIn1, TIn2, TIn3, TIn4>(name, TestWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# Boolean function.
+        /// This predicate cannot be used to enumerate argument values that makes it true; it must be called
+        /// with all its inputs defined
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="TIn5">Type of the predicate's fifth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5>(string name, SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5> func)
             => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5>(name, TestWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# Boolean function.
+        /// This predicate cannot be used to enumerate argument values that makes it true; it must be called
+        /// with all its inputs defined
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="TIn5">Type of the predicate's fifth argument</typeparam>
+        /// <typeparam name="TIn6">Type of the predicate's fifth argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
+        public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(string name, SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> func)
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(name, TestWrapper(func));
+
+        /// <summary>
+        /// Make a new predicate defined by a C# function that enumerates possible values for its
+        /// argument.
+        /// </summary>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function that enumerates possible values of the predicate's argument</param>
+        public static Predicate<TOut> Predicate<TOut>(string name, Enumerator<TOut> func)
+            => Predicate<TOut>(name, EnumeratorWrapper(func));
+
+        /// <summary>
+        /// Make a new predicate defined by a C# function that enumerates possible values for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn, TOut> Predicate<TIn, TOut>(string name, Enumerator<TIn, TOut> func)
             => Predicate<TIn, TOut>(name, EnumeratorWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that enumerates possible values for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TOut> Predicate<TIn1, TIn2, TOut>(string name, Enumerator<TIn1, TIn2, TOut> func)
             => Predicate<TIn1, TIn2, TOut>(name, EnumeratorWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that enumerates possible values for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TIn3, TOut> Predicate<TIn1, TIn2, TIn3, TOut>(string name, Enumerator<TIn1, TIn2, TIn3, TOut> func)
             => Predicate<TIn1, TIn2, TIn3, TOut>(name, EnumeratorWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that enumerates possible values for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(string name, Enumerator<TIn1, TIn2, TIn3, TIn4, TOut> func)
             => Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(name, EnumeratorWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that enumerates possible values for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="TIn5">Type of the predicate's fifth argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(string name, Enumerator<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func)
             => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(name, EnumeratorWrapper(func));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that computes a value for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// This does not enumerate any arguments.  When called, all arguments except the last
+        /// must have known values, and the predicate deterministically computes a single output value.
+        /// </summary>
+        /// <typeparam name="TOut">Type of the predicate's argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Parameterless function to compute to the value of the output argument</param>
+        /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate should fail rather than return null.</param>
         public static Predicate<TOut> Predicate<TOut>(string name, Func<TOut> func, bool failOnNull = false)
             => Predicate<TOut>(name, FunctionWrapper(func, failOnNull));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that computes a value for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// This does not enumerate any arguments.  When called, all arguments except the last
+        /// must have known values, and the predicate deterministically computes a single output value.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the value of the output argument</param>
+        /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn, TOut> Predicate<TIn, TOut>(string name, Func<TIn, TOut> func, bool failOnNull = false)
             => Predicate<TIn, TOut>(name, FunctionWrapper(func, failOnNull));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that computes a value for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// This does not enumerate any arguments.  When called, all arguments except the last
+        /// must have known values, and the predicate deterministically computes a single output value.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the value of the output argument</param>
+        /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TOut> Predicate<TIn1, TIn2, TOut>(string name, Func<TIn1, TIn2, TOut> func, bool failOnNull = false)
             => Predicate<TIn1, TIn2, TOut>(name, FunctionWrapper(func, failOnNull));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that computes a value for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// This does not enumerate any arguments.  When called, all arguments except the last
+        /// must have known values, and the predicate deterministically computes a single output value.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the value of the output argument</param>
+        /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TIn3, TOut> Predicate<TIn1, TIn2, TIn3, TOut>(string name, Func<TIn1, TIn2, TIn3, TOut> func, bool failOnNull = false)
             => Predicate<TIn1, TIn2, TIn3, TOut>(name, FunctionWrapper(func, failOnNull));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that computes a value for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// This does not enumerate any arguments.  When called, all arguments except the last
+        /// must have known values, and the predicate deterministically computes a single output value.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the value of the output argument</param>
+        /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(string name, Func<TIn1, TIn2, TIn3, TIn4, TOut> func, bool failOnNull = false)
             => Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(name, FunctionWrapper(func, failOnNull));
 
+        /// <summary>
+        /// Make a new predicate defined by a C# function that computes a value for the last
+        /// (output) argument give the values of the other (input) arguments.
+        /// This does not enumerate any arguments.  When called, all arguments except the last
+        /// must have known values, and the predicate deterministically computes a single output value.
+        /// </summary>
+        /// <typeparam name="TIn1">Type of the predicate's first argument</typeparam>
+        /// <typeparam name="TIn2">Type of the predicate's second argument</typeparam>
+        /// <typeparam name="TIn3">Type of the predicate's third argument</typeparam>
+        /// <typeparam name="TIn4">Type of the predicate's fourth argument</typeparam>
+        /// <typeparam name="TIn5">Type of the predicate's fifth argument</typeparam>
+        /// <typeparam name="TOut">Type of the predicate's last (output) argument</typeparam>
+        /// <param name="name">Name of the predicate.</param>
+        /// <param name="func">Function from the input arguments to the value of the output argument</param>
+        /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(string name, Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func, bool failOnNull = false)
             => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(name, FunctionWrapper(func, failOnNull));
         #endregion
@@ -146,11 +488,28 @@ namespace TELL
                     l => l,
                     null))[element, list];
 
+        /// <summary>
+        /// Breakpoint: executing this drops the program in the debugger so you can see the vlaue of arg.
+        /// </summary>
+        /// <typeparam name="T">Type of argument</typeparam>
+        /// <param name="arg">Argument.  Break ignores the argument, but passing something here gives you a convenient way to inspect the object while the program is running.</param>
         public static Goal Break<T>(Term<T> arg) => Predicate("Break", (SimpleTest<T>)(s =>
         {
             Debugger.Break();
             return true;
         }))[arg];
+
+        /// <summary>
+        /// True when all of its argument goals are true
+        /// </summary>
+        public static VariadicPredicate<Goal> And = new VariadicPredicate<Goal>("And",
+            (g, s, k) => RunBody(g.Arguments, 0, s, k));
+
+        private static bool RunBody(object?[] subgoals, int index, Substitution? s, SuccessContinuation k)
+            => index < subgoals.Length
+                ? ((InstantiatedGoal)subgoals[index]!).Prove(s, n => RunBody(subgoals, index + 1, n, k))
+                : k(s);
+
         #endregion
 
         #region Wrappers for predicate implementations
@@ -236,6 +595,9 @@ namespace TELL
                 return false;
             };
 
+        /// <summary>
+        /// Converts a C# Func to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation FunctionWrapper<TOut>(Func<TOut> func, bool failOnNull = false)
             => (g, s, k) =>
             {
@@ -246,6 +608,9 @@ namespace TELL
                 return Unifier.Unify(outVar, result, s, out var newS) && k(newS);
             };
 
+        /// <summary>
+        /// Converts a C# Func to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation FunctionWrapper<TIn, TOut>(Func<TIn, TOut> func, bool failOnNull = false)
             => (g, s, k) =>
             {
@@ -258,6 +623,9 @@ namespace TELL
                 return Unifier.Unify(outVar, result, s, out var newS) && k(newS);
             };
 
+        /// <summary>
+        /// Converts a C# Func to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TOut>(Func<TIn1, TIn2, TOut> func, bool failOnNull = false)
             => (g, s, k) =>
             {
@@ -270,6 +638,9 @@ namespace TELL
                 return Unifier.Unify(outVar, result, s, out var newS) && k(newS);
             };
 
+        /// <summary>
+        /// Converts a C# Func to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TOut>(Func<TIn1, TIn2, TIn3, TOut> func, bool failOnNull = false)
             => (g, s, k) =>
             {
@@ -283,6 +654,9 @@ namespace TELL
                 return Unifier.Unify(outVar, result, s, out var newS) && k(newS);
             };
 
+        /// <summary>
+        /// Converts a C# Func to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TIn4, TOut>(Func<TIn1, TIn2, TIn3, TIn4, TOut> func, bool failOnNull = false)
             => (g, s, k) =>
             {
@@ -297,6 +671,9 @@ namespace TELL
                 return Unifier.Unify(outVar, result, s, out var newS) && k(newS);
             };
 
+        /// <summary>
+        /// Converts a C# Func to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func, bool failOnNull = false)
             => (g, s, k) =>
             {
@@ -312,7 +689,15 @@ namespace TELL
                 return Unifier.Unify(outVar, result, s, out var newS) && k(newS);
             };
 
+        /// <summary>
+        /// A function that implements a predicate that just tests its arguments without
+        /// filling any of them in.
+        /// </summary>
         public delegate bool SimpleTest<TIn>(TIn arg);
+        
+        /// <summary>
+        /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation TestWrapper<TIn>(SimpleTest<TIn> func)
             => (g, s, k) =>
             {
@@ -321,7 +706,15 @@ namespace TELL
                 return result && k(s);
             };
 
+        /// <summary>
+        /// A function that implements a predicate that just tests its arguments without
+        /// filling any of them in.
+        /// </summary>
         public delegate bool SimpleTest<TIn1, TIn2>(TIn1 arg1, TIn2 arg2);
+        
+        /// <summary>
+        /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation TestWrapper<TIn1, TIn2>(SimpleTest<TIn1, TIn2> func)
             => (g, s, k) =>
             {
@@ -331,7 +724,15 @@ namespace TELL
                 return result && k(s);
             };
 
+        /// <summary>
+        /// A function that implements a predicate that just tests its arguments without
+        /// filling any of them in.
+        /// </summary>
         public delegate bool SimpleTest<TIn1, TIn2, TIn3>(TIn1 arg1, TIn2 arg2, TIn3 arg3);
+        
+        /// <summary>
+        /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3>(SimpleTest<TIn1, TIn2, TIn3> func)
             => (g, s, k) =>
             {
@@ -342,7 +743,15 @@ namespace TELL
                 return result && k(s);
             };
 
+        /// <summary>
+        /// A function that implements a predicate that just tests its arguments without
+        /// filling any of them in.
+        /// </summary>
         public delegate bool SimpleTest<TIn1, TIn2, TIn3, TIn4>(TIn1 arg1, TIn2 arg2, TIn3 arg3, TIn4 arg4);
+        
+        /// <summary>
+        /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4>(SimpleTest<TIn1, TIn2, TIn3, TIn4> func)
             => (g, s, k) =>
             {
@@ -354,7 +763,15 @@ namespace TELL
                 return result && k(s);
             };
 
+        /// <summary>
+        /// A function that implements a predicate that just tests its arguments without
+        /// filling any of them in.
+        /// </summary>
         public delegate bool SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5>(TIn1 arg1, TIn2 arg2, TIn3 arg3, TIn4 arg4, TIn5 arg5);
+        
+        /// <summary>
+        /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4, TIn5>(SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5> func)
             => (g, s, k) =>
             {
@@ -367,7 +784,15 @@ namespace TELL
                 return result && k(s);
             };
 
+        /// <summary>
+        /// A function that implements a predicate that just tests its arguments without
+        /// filling any of them in.
+        /// </summary>
         public delegate bool SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(TIn1 arg1, TIn2 arg2, TIn3 arg3, TIn4 arg4, TIn5 arg5, TIn6 arg6);
+        
+        /// <summary>
+        /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
+        /// </summary>
         public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> func)
             => (g, s, k) =>
             {
@@ -381,7 +806,15 @@ namespace TELL
                 return result && k(s);
             };
 
+        
+        /// <summary>
+        /// A function that implements a predicate that enumerates values of its (only) argument.
+        /// </summary>
         public delegate IEnumerable<TOut> Enumerator<TOut>();
+        
+        /// <summary>
+        /// Makes a driver function that implements a predicate that enumerates values of its (only) argument.
+        /// </summary>
         public static PredicateImplementation EnumeratorWrapper<TOut>(Enumerator<TOut> func)
             => (g, s, k) =>
             {
@@ -394,7 +827,16 @@ namespace TELL
                 return false;
             };
 
+        /// <summary>
+        /// A function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public delegate IEnumerable<TOut> Enumerator<TIn, TOut>(TIn arg);
+        
+        /// <summary>
+        /// Makes a driver function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public static PredicateImplementation EnumeratorWrapper<TIn, TOut>(Enumerator<TIn, TOut> func)
             => (g, s, k) =>
             {
@@ -408,7 +850,16 @@ namespace TELL
                 return false;
             };
 
+        /// <summary>
+        /// A function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public delegate IEnumerable<TOut> Enumerator<TIn1, TIn2, TOut>(TIn1 arg1, TIn2 arg2);
+        
+        /// <summary>
+        /// Makes a driver function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TOut>(Enumerator<TIn1, TIn2, TOut> func)
             => (g, s, k) =>
             {
@@ -423,7 +874,16 @@ namespace TELL
                 return false;
             };
 
+        /// <summary>
+        /// A function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public delegate IEnumerable<TOut> Enumerator<TIn1, TIn2, TIn3, TOut>(TIn1 arg1, TIn2 arg2, TIn3 arg3);
+        
+        /// <summary>
+        /// Makes a driver function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TOut>(Enumerator<TIn1, TIn2, TIn3, TOut> func)
             => (g, s, k) =>
             {
@@ -439,7 +899,16 @@ namespace TELL
                 return false;
             };
 
+        /// <summary>
+        /// A function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public delegate IEnumerable<TOut> Enumerator<TIn1, TIn2, TIn3, TIn4, TOut>(TIn1 arg1, TIn2 arg2, TIn3 arg3, TIn4 arg4);
+        
+        /// <summary>
+        /// Makes a driver function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TIn4, TOut>(Enumerator<TIn1, TIn2, TIn3, TIn4, TOut> func)
             => (g, s, k) =>
             {
@@ -456,7 +925,16 @@ namespace TELL
                 return false;
             };
 
+        /// <summary>
+        /// A function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public delegate IEnumerable<TOut> Enumerator<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(TIn1 arg1, TIn2 arg2, TIn3 arg3, TIn4 arg4, TIn5 arg5);
+        
+        /// <summary>
+        /// Makes a driver function that implements a predicate that enumerates values of its last argument
+        /// given values of its other arguments.
+        /// </summary>
         public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(Enumerator<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func)
             => (g, s, k) =>
             {
@@ -475,12 +953,5 @@ namespace TELL
             };
         #endregion
 
-        public static VariadicPredicate<Goal> And = new VariadicPredicate<Goal>("and",
-            (g, s, k) => RunBody(g.Arguments, 0, s, k));
-
-        private static bool RunBody(object?[] subgoals, int index, Substitution? s, SuccessContinuation k)
-            => index < subgoals.Length
-                ? ((InstantiatedGoal)subgoals[index]!).Prove(s, n => RunBody(subgoals, index + 1, n, k))
-                : k(s);
     }
 }
