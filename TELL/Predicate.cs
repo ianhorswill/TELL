@@ -81,6 +81,13 @@ namespace TELL
         /// <param name="args">Term expressions for the arguments</param>
         /// <returns>Goal object</returns>
         public abstract Goal GetGoal(Term[] args);
+
+        protected Term<T> CastArgument<T>(Term arg, int argumentNumber)
+        {
+            if (arg is Term<T> t) return t;
+            throw new ArgumentException(
+                $"Argument {argumentNumber} to {Name}, {arg}, was expected to be a {typeof(T).Name} but was a {arg.Type.Name}");
+        }
     }
     //
     // Typed version of AnyPredicate
@@ -104,7 +111,7 @@ namespace TELL
         {
             if (args.Length != 1)
                 throw new ArgumentException($"{Name} expects 1 argument but was given {args.Length}");
-            return this[(Term<T1>)args[0]];
+            return this[CastArgument<T1>(args[0], 1)];
         }
 
         /// <summary>
@@ -153,7 +160,7 @@ namespace TELL
         {
             if (args.Length != 2)
                 throw new ArgumentException($"{Name} expects 2 arguments but was given {args.Length}");
-            return this[(Term<T1>)args[0], (Term<T2>)args[1]];
+            return this[CastArgument<T1>(args[0], 1), CastArgument<T2>(args[1], 2)];
         }
 
         /// <summary>
@@ -203,7 +210,7 @@ namespace TELL
         {
             if (args.Length != 3)
                 throw new ArgumentException($"{Name} expects 3 arguments but was given {args.Length}");
-            return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2]];
+            return this[CastArgument<T1>(args[0], 1), CastArgument<T2>(args[1], 2), CastArgument<T3>(args[2], 3)];
         }
 
         /// <summary>
@@ -255,7 +262,7 @@ namespace TELL
         {
             if (args.Length != 4)
                 throw new ArgumentException($"{Name} expects 4 arguments but was given {args.Length}");
-            return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2], (Term<T4>)args[3]];
+            return this[CastArgument<T1>(args[0], 1), CastArgument<T2>(args[1], 2), CastArgument<T3>(args[2], 3), CastArgument<T4>(args[3], 4)];
         }
 
         /// <summary>
@@ -308,7 +315,8 @@ namespace TELL
         {
             if (args.Length != 5)
                 throw new ArgumentException($"{Name} expects 5 arguments but was given {args.Length}");
-            return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2], (Term<T4>)args[3], (Term<T5>)args[4]];
+            return this[CastArgument<T1>(args[0], 1), CastArgument<T2>(args[1], 2), CastArgument<T3>(args[2], 3),
+                        CastArgument<T4>(args[3], 4), CastArgument<T5>(args[4], 5)];
         }
 
         /// <summary>
@@ -362,7 +370,8 @@ namespace TELL
         {
             if (args.Length != 6)
                 throw new ArgumentException($"{Name} expects 6 arguments but was given {args.Length}");
-            return this[(Term<T1>)args[0], (Term<T2>)args[1], (Term<T3>)args[2], (Term<T4>)args[3], (Term<T5>)args[4], (Term<T6>)args[5]];
+            return this[CastArgument<T1>(args[0], 1), CastArgument<T2>(args[1], 2), CastArgument<T3>(args[2], 3),
+                        CastArgument<T4>(args[3], 4), CastArgument<T5>(args[4], 5), CastArgument<T6>(args[5], 6)];
         }
 
         /// <summary>

@@ -50,6 +50,32 @@ namespace TELL.Interpreter
         }
 
         /// <summary>
+        /// Find the value of the first argument given the substitution, and cast it to the specified type
+        /// </summary>
+        /// <typeparam name="T">Expected type</typeparam>
+        /// <param name="constantOrVariable">Value to dereference</param>
+        /// <param name="subst">Substitution</param>
+        /// <param name="predicateName">Name of the predicate being executed</param>
+        /// <param name="argNumber">Position of the argument to the predicate that we're dereferencing</param>
+        /// <returns>Value</returns>
+        /// <exception cref="Exception">If value is of the wrong type or is an unbound variable</exception>
+        public static T DereferenceToConstant<T>(object? constantOrVariable, Substitution? subst, string predicateName, int argNumber)
+        {
+            switch (Dereference(constantOrVariable, subst))
+            {
+                case T t: return t;
+                case Constant<T> c: return c.Value;  // In case we're called from Solutions, which can pass in the original term objects of the goal
+                case Term v:
+                    throw new Exception(
+                        $"Argument {argNumber} to predicate {predicateName}, {v}, should have been bound to a value of type {typeof(T).Name}, but was unbound");
+
+                default:
+                    throw new Exception(
+                        $"Value of argument {argNumber} to {predicateName}, {constantOrVariable}, should have been of type {typeof(T).Name}, but was not.");
+            }
+        }
+
+        /// <summary>
         /// Test if it's possible to make the dereferenced versions of the two values the same, possibly by extending
         /// the substitution.  Output the Substitution that makes them the same.  If the dereferenced versions are already
         /// the same, then the unifiedSubst will just be the original one.  If they're not the same, but one of them is

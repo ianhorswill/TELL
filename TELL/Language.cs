@@ -204,7 +204,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn> Predicate<TIn>(string name, SimpleTest<TIn> func)
-            => Predicate<TIn>(name, TestWrapper(func));
+            => Predicate<TIn>(name, TestWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# Boolean function.
@@ -216,7 +216,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2> Predicate<TIn1, TIn2>(string name, SimpleTest<TIn1, TIn2> func)
-            => Predicate<TIn1, TIn2>(name, TestWrapper(func));
+            => Predicate<TIn1, TIn2>(name, TestWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# Boolean function.
@@ -229,7 +229,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3> Predicate<TIn1, TIn2, TIn3>(string name, SimpleTest<TIn1, TIn2, TIn3> func)
-            => Predicate<TIn1, TIn2, TIn3>(name, TestWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3>(name, TestWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# Boolean function.
@@ -243,7 +243,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4> Predicate<TIn1, TIn2, TIn3, TIn4>(string name, SimpleTest<TIn1, TIn2, TIn3, TIn4> func)
-            => Predicate<TIn1, TIn2, TIn3, TIn4>(name, TestWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3, TIn4>(name, TestWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# Boolean function.
@@ -258,7 +258,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5>(string name, SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5> func)
-            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5>(name, TestWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5>(name, TestWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# Boolean function.
@@ -274,7 +274,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function that takes the values of the arguments and returns true or false</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(string name, SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> func)
-            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(name, TestWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(name, TestWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that enumerates possible values for its
@@ -295,7 +295,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn, TOut> Predicate<TIn, TOut>(string name, Enumerator<TIn, TOut> func)
-            => Predicate<TIn, TOut>(name, EnumeratorWrapper(func));
+            => Predicate<TIn, TOut>(name, EnumeratorWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that enumerates possible values for the last
@@ -307,7 +307,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TOut> Predicate<TIn1, TIn2, TOut>(string name, Enumerator<TIn1, TIn2, TOut> func)
-            => Predicate<TIn1, TIn2, TOut>(name, EnumeratorWrapper(func));
+            => Predicate<TIn1, TIn2, TOut>(name, EnumeratorWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that enumerates possible values for the last
@@ -320,7 +320,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TIn3, TOut> Predicate<TIn1, TIn2, TIn3, TOut>(string name, Enumerator<TIn1, TIn2, TIn3, TOut> func)
-            => Predicate<TIn1, TIn2, TIn3, TOut>(name, EnumeratorWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3, TOut>(name, EnumeratorWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that enumerates possible values for the last
@@ -334,7 +334,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(string name, Enumerator<TIn1, TIn2, TIn3, TIn4, TOut> func)
-            => Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(name, EnumeratorWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(name, EnumeratorWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that enumerates possible values for the last
@@ -349,7 +349,7 @@ namespace TELL
         /// <param name="name">Name of the predicate.</param>
         /// <param name="func">Function from the input arguments to the possible values of the output argument</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(string name, Enumerator<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func)
-            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(name, EnumeratorWrapper(func));
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(name, EnumeratorWrapper(func, name));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that computes a value for the last
@@ -376,7 +376,7 @@ namespace TELL
         /// <param name="func">Function from the input arguments to the value of the output argument</param>
         /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn, TOut> Predicate<TIn, TOut>(string name, Func<TIn, TOut> func, bool failOnNull = false)
-            => Predicate<TIn, TOut>(name, FunctionWrapper(func, failOnNull));
+            => Predicate<TIn, TOut>(name, FunctionWrapper(func, name, failOnNull));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that computes a value for the last
@@ -391,7 +391,7 @@ namespace TELL
         /// <param name="func">Function from the input arguments to the value of the output argument</param>
         /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TOut> Predicate<TIn1, TIn2, TOut>(string name, Func<TIn1, TIn2, TOut> func, bool failOnNull = false)
-            => Predicate<TIn1, TIn2, TOut>(name, FunctionWrapper(func, failOnNull));
+            => Predicate<TIn1, TIn2, TOut>(name, FunctionWrapper(func, name, failOnNull));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that computes a value for the last
@@ -407,7 +407,7 @@ namespace TELL
         /// <param name="func">Function from the input arguments to the value of the output argument</param>
         /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TIn3, TOut> Predicate<TIn1, TIn2, TIn3, TOut>(string name, Func<TIn1, TIn2, TIn3, TOut> func, bool failOnNull = false)
-            => Predicate<TIn1, TIn2, TIn3, TOut>(name, FunctionWrapper(func, failOnNull));
+            => Predicate<TIn1, TIn2, TIn3, TOut>(name, FunctionWrapper(func, name, failOnNull));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that computes a value for the last
@@ -424,7 +424,7 @@ namespace TELL
         /// <param name="func">Function from the input arguments to the value of the output argument</param>
         /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(string name, Func<TIn1, TIn2, TIn3, TIn4, TOut> func, bool failOnNull = false)
-            => Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(name, FunctionWrapper(func, failOnNull));
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TOut>(name, FunctionWrapper(func, name, failOnNull));
 
         /// <summary>
         /// Make a new predicate defined by a C# function that computes a value for the last
@@ -442,7 +442,7 @@ namespace TELL
         /// <param name="func">Function from the input arguments to the value of the output argument</param>
         /// <param name="failOnNull">If the value of func is null (or default(TOut)), then the predicate has no value for the inputs and so should fail</param>
         public static Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(string name, Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func, bool failOnNull = false)
-            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(name, FunctionWrapper(func, failOnNull));
+            => Predicate<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(name, FunctionWrapper(func, name, failOnNull));
         #endregion
 
         #region Primitive predicates
@@ -612,11 +612,10 @@ namespace TELL
         /// <summary>
         /// Converts a C# Func to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation FunctionWrapper<TIn, TOut>(Func<TIn, TOut> func, bool failOnNull = false)
+        public static PredicateImplementation FunctionWrapper<TIn, TOut>(Func<TIn, TOut> func, string predicateName, bool failOnNull = false)
             => (g, s, k) =>
             {
-                var dereference = Unifier.Dereference(g.Arguments[0], s);
-                var inArg = (TIn)dereference!;
+                var inArg = Unifier.DereferenceToConstant<TIn>(g.Arguments[0], s, predicateName, 1)!;
                 var outVar = g.Arguments[1];
                 var result = func(inArg);
                 if (failOnNull && result == null)
@@ -627,11 +626,11 @@ namespace TELL
         /// <summary>
         /// Converts a C# Func to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TOut>(Func<TIn1, TIn2, TOut> func, bool failOnNull = false)
+        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TOut>(Func<TIn1, TIn2, TOut> func, string predicateName, bool failOnNull = false)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
                 var outVar = g.Arguments[2];
                 var result = func(inArg1, inArg2);
                 if (failOnNull && result == null)
@@ -642,12 +641,12 @@ namespace TELL
         /// <summary>
         /// Converts a C# Func to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TOut>(Func<TIn1, TIn2, TIn3, TOut> func, bool failOnNull = false)
+        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TOut>(Func<TIn1, TIn2, TIn3, TOut> func, string predicateName, bool failOnNull = false)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
                 var outVar = g.Arguments[3];
                 var result = func(inArg1, inArg2, inArg3);
                 if (failOnNull && result == null)
@@ -658,13 +657,13 @@ namespace TELL
         /// <summary>
         /// Converts a C# Func to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TIn4, TOut>(Func<TIn1, TIn2, TIn3, TIn4, TOut> func, bool failOnNull = false)
+        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TIn4, TOut>(Func<TIn1, TIn2, TIn3, TIn4, TOut> func, string predicateName, bool failOnNull = false)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
                 var outVar = g.Arguments[4];
                 var result = func(inArg1, inArg2, inArg3, inArg4);
                 if (failOnNull && result == null)
@@ -675,14 +674,14 @@ namespace TELL
         /// <summary>
         /// Converts a C# Func to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func, bool failOnNull = false)
+        public static PredicateImplementation FunctionWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func, string predicateName, bool failOnNull = false)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
-                var inArg5 = (TIn5)Unifier.Dereference(g.Arguments[4], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
+                var inArg5 = Unifier.DereferenceToConstant<TIn5>(g.Arguments[4], s, predicateName, 5)!;
                 var outVar = g.Arguments[5];
                 var result = func(inArg1, inArg2, inArg3, inArg4, inArg5);
                 if (failOnNull && result == null)
@@ -699,11 +698,11 @@ namespace TELL
         /// <summary>
         /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation TestWrapper<TIn>(SimpleTest<TIn> func)
+        public static PredicateImplementation TestWrapper<TIn>(SimpleTest<TIn> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg = (TIn)Unifier.Dereference(g.Arguments[0], s)!;
-                var result = func(inArg);
+                var inArg1 = Unifier.DereferenceToConstant<TIn>(g.Arguments[0], s, predicateName, 1)!;
+                var result = func(inArg1);
                 return result && k(s);
             };
 
@@ -716,11 +715,11 @@ namespace TELL
         /// <summary>
         /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation TestWrapper<TIn1, TIn2>(SimpleTest<TIn1, TIn2> func)
+        public static PredicateImplementation TestWrapper<TIn1, TIn2>(SimpleTest<TIn1, TIn2> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
                 var result = func(inArg1, inArg2);
                 return result && k(s);
             };
@@ -734,12 +733,12 @@ namespace TELL
         /// <summary>
         /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3>(SimpleTest<TIn1, TIn2, TIn3> func)
+        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3>(SimpleTest<TIn1, TIn2, TIn3> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
                 var result = func(inArg1, inArg2, inArg3);
                 return result && k(s);
             };
@@ -753,13 +752,13 @@ namespace TELL
         /// <summary>
         /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4>(SimpleTest<TIn1, TIn2, TIn3, TIn4> func)
+        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4>(SimpleTest<TIn1, TIn2, TIn3, TIn4> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
                 var result = func(inArg1, inArg2, inArg3, inArg4);
                 return result && k(s);
             };
@@ -773,14 +772,14 @@ namespace TELL
         /// <summary>
         /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4, TIn5>(SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5> func)
+        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4, TIn5>(SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
-                var inArg5 = (TIn5)Unifier.Dereference(g.Arguments[4], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
+                var inArg5 = Unifier.DereferenceToConstant<TIn5>(g.Arguments[4], s, predicateName, 5)!;
                 var result = func(inArg1, inArg2, inArg3, inArg4, inArg5);
                 return result && k(s);
             };
@@ -794,15 +793,15 @@ namespace TELL
         /// <summary>
         /// Converts a C# predicate, in the sense of function from arguments to a Boolean, to the driver code for a predicate
         /// </summary>
-        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> func)
+        public static PredicateImplementation TestWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6>(SimpleTest<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
-                var inArg5 = (TIn5)Unifier.Dereference(g.Arguments[4], s)!;
-                var inArg6 = (TIn6)Unifier.Dereference(g.Arguments[5], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
+                var inArg5 = Unifier.DereferenceToConstant<TIn5>(g.Arguments[4], s, predicateName, 5)!;
+                var inArg6 = Unifier.DereferenceToConstant<TIn6>(g.Arguments[5], s, predicateName, 6)!;
                 var result = func(inArg1, inArg2, inArg3, inArg4, inArg5, inArg6);
                 return result && k(s);
             };
@@ -838,10 +837,10 @@ namespace TELL
         /// Makes a driver function that implements a predicate that enumerates values of its last argument
         /// given values of its other arguments.
         /// </summary>
-        public static PredicateImplementation EnumeratorWrapper<TIn, TOut>(Enumerator<TIn, TOut> func)
+        public static PredicateImplementation EnumeratorWrapper<TIn, TOut>(Enumerator<TIn, TOut> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg = (TIn)Unifier.Dereference(g.Arguments[0], s)!;
+                var inArg = Unifier.DereferenceToConstant<TIn>(g.Arguments[0], s, predicateName, 1)!;
                 var outVar = g.Arguments[1];
                 var results = func(inArg);
 
@@ -861,11 +860,11 @@ namespace TELL
         /// Makes a driver function that implements a predicate that enumerates values of its last argument
         /// given values of its other arguments.
         /// </summary>
-        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TOut>(Enumerator<TIn1, TIn2, TOut> func)
+        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TOut>(Enumerator<TIn1, TIn2, TOut> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
                 var outVar = g.Arguments[2];
                 var results = func(inArg1, inArg2);
                 
@@ -885,12 +884,12 @@ namespace TELL
         /// Makes a driver function that implements a predicate that enumerates values of its last argument
         /// given values of its other arguments.
         /// </summary>
-        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TOut>(Enumerator<TIn1, TIn2, TIn3, TOut> func)
+        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TOut>(Enumerator<TIn1, TIn2, TIn3, TOut> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName,1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s)!;
                 var outVar = g.Arguments[3];
                 var results = func(inArg1, inArg2, inArg3);
 
@@ -910,13 +909,13 @@ namespace TELL
         /// Makes a driver function that implements a predicate that enumerates values of its last argument
         /// given values of its other arguments.
         /// </summary>
-        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TIn4, TOut>(Enumerator<TIn1, TIn2, TIn3, TIn4, TOut> func)
+        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TIn4, TOut>(Enumerator<TIn1, TIn2, TIn3, TIn4, TOut> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
+                var inArg1 = Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
                 var outVar = g.Arguments[4];
                 var results = func(inArg1, inArg2, inArg3, inArg4);
                 
@@ -936,14 +935,14 @@ namespace TELL
         /// Makes a driver function that implements a predicate that enumerates values of its last argument
         /// given values of its other arguments.
         /// </summary>
-        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(Enumerator<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func)
+        public static PredicateImplementation EnumeratorWrapper<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(Enumerator<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> func, string predicateName)
             => (g, s, k) =>
             {
-                var inArg1 = (TIn1)Unifier.Dereference(g.Arguments[0], s)!;
-                var inArg2 = (TIn2)Unifier.Dereference(g.Arguments[1], s)!;
-                var inArg3 = (TIn3)Unifier.Dereference(g.Arguments[2], s)!;
-                var inArg4 = (TIn4)Unifier.Dereference(g.Arguments[3], s)!;
-                var inArg5 = (TIn5)Unifier.Dereference(g.Arguments[4], s)!;
+                var inArg1 = (TIn1)Unifier.DereferenceToConstant<TIn1>(g.Arguments[0], s, predicateName, 1)!;
+                var inArg2 = (TIn2)Unifier.DereferenceToConstant<TIn2>(g.Arguments[1], s, predicateName, 2)!;
+                var inArg3 = (TIn3)Unifier.DereferenceToConstant<TIn3>(g.Arguments[2], s, predicateName, 3)!;
+                var inArg4 = (TIn4)Unifier.DereferenceToConstant<TIn4>(g.Arguments[3], s, predicateName, 4)!;
+                var inArg5 = (TIn5)Unifier.DereferenceToConstant<TIn5>(g.Arguments[4], s, predicateName, 5)!;
                 var outVar = g.Arguments[5];
                 var results = func(inArg1, inArg2, inArg3, inArg4, inArg5);
                 
