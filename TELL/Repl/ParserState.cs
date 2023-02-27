@@ -78,6 +78,16 @@ namespace TELL.Repl
             return k(JumpTo(Position + i));
         }
 
+        public bool MatchAnyOf(string matchingChars, Continuation k)
+        {
+            if (RemainingChars < 1)
+                return false;
+            int i;
+            if (!matchingChars.Contains(Text[Position]))
+                    return false;
+            return k(JumpTo(Position + 1));
+        }
+
         public bool Star<T>(Parser<T> parser, Continuation<IList<T>> k)
         {
             var values = new List<T>();
