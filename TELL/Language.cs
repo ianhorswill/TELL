@@ -465,13 +465,29 @@ namespace TELL
             (g, s, k) =>
             {
                 Substitution? result = null;
-                var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[0], s, nameof(Not), 1);
+                var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[0], s, nameof(Once), 1);
                 var goalArgumentTrue = goalArgument.Prove(s, finalSubst =>
                 {
                     result = finalSubst;
                     return true;
                 });
                 return goalArgumentTrue && k(result);
+            });
+
+        /// <summary>
+        /// True when the last argument is the sum, across all solutions to the goal, of the first argument.
+        /// </summary>
+        public static readonly Predicate<float, Goal, float> Sum = new Predicate<float,Goal,float>("Sum",
+            (g, s, k) =>
+            {
+                float result = 0;
+                var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[1], s, nameof(Sum), 2);
+                goalArgument.Prove(s, solution =>
+                {
+                    result += Unifier.DereferenceToConstant<float>(g.Arguments[0], solution, nameof(Sum), 1);
+                    return false;
+                });
+                return Unifier.Unify(result, g.Arguments[2], s, out var finalSubst) && k(finalSubst);
             });
 
         /// <summary>

@@ -53,6 +53,19 @@ namespace Tests
         }
 
         [TestMethod]
+        public void SumTest()
+        {
+            var x = (Var<float>)"x";
+            var sum = (Var<float>)"sum";
+            var p = Predicate("p", x);
+            p[1].Fact();
+            p[2].Fact();
+            p[3].Fact();
+            p[4].Fact();
+            Assert.AreEqual(10f, Sum[x, p[x], sum].SolveFor(sum));
+        }
+
+        [TestMethod]
         public void AndTest()
         {
             var x = (Var<string>)"x";
