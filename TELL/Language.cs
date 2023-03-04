@@ -453,9 +453,25 @@ namespace TELL
         public static readonly Predicate<Goal> Not = new Predicate<Goal>("Not",
             (g, s, k) =>
             {
-                var goalArgument = (InstantiatedGoal)g.Arguments[0]!;
+                var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[0], s, nameof(Not), 1);
                 var goalArgumentTrue = goalArgument.Prove(s, _ => true);
                 return !goalArgumentTrue && k(s);
+            });
+
+        /// <summary>
+        /// Runs the goal predicate, but succeeds only once; does not look for further solutions if we backtrack.
+        /// </summary>
+        public static readonly Predicate<Goal> Once = new Predicate<Goal>("Once",
+            (g, s, k) =>
+            {
+                Substitution? result = null;
+                var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[0], s, nameof(Not), 1);
+                var goalArgumentTrue = goalArgument.Prove(s, finalSubst =>
+                {
+                    result = finalSubst;
+                    return true;
+                });
+                return goalArgumentTrue && k(result);
             });
 
         /// <summary>

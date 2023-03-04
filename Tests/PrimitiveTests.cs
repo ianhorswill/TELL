@@ -23,6 +23,20 @@ namespace Tests
         }
 
         [TestMethod]
+        public void OnceTest()
+        {
+            var p = new TELL.Predicate<string>("p");
+            p["a"].Fact();
+            p["c"].Fact();
+            p["d"].Fact();
+            var s = (Var<string>)"s";
+            var onceResult = Once[p[s]].SolveForAll(s).ToArray();
+            CollectionAssert.AreEqual(new[] {"a"},
+                onceResult);
+            AssertNot(Once[p["b"]]);
+        }
+
+        [TestMethod]
         public void AndTest()
         {
             var x = (Var<string>)"x";
