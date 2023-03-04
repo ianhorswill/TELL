@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using TELL.Interpreter;
 using static TELL.Interpreter.Prover;
+using static TELL.Interpreter.CsvReader;
 
 namespace TELL
 {
@@ -82,12 +85,55 @@ namespace TELL
         /// <returns>Goal object</returns>
         public abstract Goal GetGoal(Term[] args);
 
+        /// <summary>
+        /// Check that argument is instantiated to a value of the right type and return it caast to that type
+        /// </summary>
+        /// <param name="arg">Argument (variable or object)</param>
+        /// <param name="argumentNumber">Position in argument list</param>
+        /// <typeparam name="T">Expected type</typeparam>
+        /// <returns>Value of type T</returns>
+        /// <exception cref="ArgumentException">If arg is uninstantiated (unbound) or of the wrong type</exception>
         protected Term<T> CastArgument<T>(Term arg, int argumentNumber)
         {
             if (arg is Term<T> t) return t;
             throw new ArgumentException(
                 $"Argument {argumentNumber} to {Name}, {arg}, was expected to be a {typeof(T).Name} but was a {arg.Type.Name}");
         }
+
+        /// <summary>
+        /// Verify that the header row of a CSV file matches the declared variable names
+        /// </summary>
+        protected void VerifyCsvColumnNames(string[] headerRow)
+        {
+            if (headerRow.Length != DefaultVariables.Length)
+                throw new InvalidDataException(
+                    $"Predicate {Name} declared with {DefaultVariables.Length} arguments, but CSV file contains {headerRow.Length} columns");
+            for (var i = 0; i < headerRow.Length; i++)
+            {
+                var headerName = headerRow[i];
+                var argumentName = ((IVariable)DefaultVariables[i]).VariableName;
+                if (string.Compare(headerName, argumentName, true, CultureInfo.InvariantCulture) != 0)
+                    throw new InvalidDataException(
+                        $"For predicate {Name}, the column name {headerName} in the CSV file does not match the declared name {argumentName}");
+            }
+        }
+
+        /// <summary>
+        /// Load a set of facts from a CSV file
+        /// </summary>
+        /// <param name="path">path to the file</param>
+        protected void LoadCsv(string path)
+        {
+            var (header, data) = ReadCsv(path);
+            VerifyCsvColumnNames(header);
+            foreach (var row in data)
+                CsvRowToFact(row).Fact();
+        }
+
+        /// <summary>
+        /// Convert a CSV row loaded from a file into a Goal that can be asserted as a fact.
+        /// </summary>
+        protected abstract Goal CsvRowToFact(string[] row);
     }
     //
     // Typed version of AnyPredicate
@@ -141,6 +187,20 @@ namespace TELL
             GetGoal(DefaultVariables).If(body);
             return this;
         }
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) => this[ConvertCell<T1>(row[0])];
+
+        /// <summary>
+        /// Load a set of facts from a CSV file into this predicate.
+        /// </summary>
+        /// <param name="path">Path to the CSV file</param>
+        /// <returns>this predicate</returns>
+        public Predicate<T1> FromFile(string path)
+        {
+            LoadCsv(path);
+            return this;
+        }
     }
 
     /// <summary>
@@ -190,6 +250,22 @@ namespace TELL
             GetGoal(DefaultVariables).If(body);
             return this;
         }
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) 
+            => this[ConvertCell<T1>(row[0]), ConvertCell<T2>(row[1])];
+
+        /// <summary>
+        /// Load a set of facts from a CSV file into this predicate.
+        /// </summary>
+        /// <param name="path">Path to the CSV file</param>
+        /// <returns>this predicate</returns>
+        public Predicate<T1,T2> FromFile(string path)
+        {
+            LoadCsv(path);
+            return this;
+        }
+
     }
 
     /// <summary>
@@ -238,6 +314,21 @@ namespace TELL
             if (DefaultVariables == null)
                 throw new InvalidOperationException("Cannot add a rule to a primitive predicate");
             GetGoal(DefaultVariables).If(body);
+            return this;
+        }
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) 
+            => this[ConvertCell<T1>(row[0]), ConvertCell<T2>(row[1]), ConvertCell<T3>(row[2])];
+
+        /// <summary>
+        /// Load a set of facts from a CSV file into this predicate.
+        /// </summary>
+        /// <param name="path">Path to the CSV file</param>
+        /// <returns>this predicate</returns>
+        public Predicate<T1,T2,T3> FromFile(string path)
+        {
+            LoadCsv(path);
             return this;
         }
     }
@@ -292,6 +383,22 @@ namespace TELL
             GetGoal(DefaultVariables).If(body);
             return this;
         }
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) 
+            => this[ConvertCell<T1>(row[0]), ConvertCell<T2>(row[1]), ConvertCell<T3>(row[2]),
+                    ConvertCell<T4>(row[3])];
+        
+        /// <summary>
+        /// Load a set of facts from a CSV file into this predicate.
+        /// </summary>
+        /// <param name="path">Path to the CSV file</param>
+        /// <returns>this predicate</returns>
+        public Predicate<T1,T2,T3,T4> FromFile(string path)
+        {
+            LoadCsv(path);
+            return this;
+        }
     }
 
     /// <summary>
@@ -344,6 +451,22 @@ namespace TELL
             if (DefaultVariables == null)
                 throw new InvalidOperationException("Cannot add a rule to a primitive predicate");
             GetGoal(DefaultVariables).If(body);
+            return this;
+        }
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) 
+            => this[ConvertCell<T1>(row[0]), ConvertCell<T2>(row[1]), ConvertCell<T3>(row[2]),
+                ConvertCell<T4>(row[3]), ConvertCell<T5>(row[4])];
+        
+        /// <summary>
+        /// Load a set of facts from a CSV file into this predicate.
+        /// </summary>
+        /// <param name="path">Path to the CSV file</param>
+        /// <returns>this predicate</returns>
+        public Predicate<T1,T2,T3,T4,T5> FromFile(string path)
+        {
+            LoadCsv(path);
             return this;
         }
     }
@@ -401,6 +524,22 @@ namespace TELL
             GetGoal(DefaultVariables).If(body);
             return this;
         }
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) 
+            => this[ConvertCell<T1>(row[0]), ConvertCell<T2>(row[1]), ConvertCell<T3>(row[2]),
+                ConvertCell<T4>(row[3]), ConvertCell<T5>(row[4]), ConvertCell<T6>(row[5])];
+
+        /// <summary>
+        /// Load a set of facts from a CSV file into this predicate.
+        /// </summary>
+        /// <param name="path">Path to the CSV file</param>
+        /// <returns>this predicate</returns>
+        public Predicate<T1,T2,T3,T4,T5,T6> FromFile(string path)
+        {
+            LoadCsv(path);
+            return this;
+        }
     }
 
     /// <summary>
@@ -416,6 +555,9 @@ namespace TELL
 
         /// <inheritdoc />
         public override Goal GetGoal(Term[] args) => this[args.Cast<Term<T>>().ToArray()];
+
+        /// <inheritdoc />
+        protected override Goal CsvRowToFact(string[] row) => throw new NotImplementedException();
 
         /// <summary>
         /// Make a new primitive predicate
