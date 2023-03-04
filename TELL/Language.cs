@@ -475,6 +475,20 @@ namespace TELL
             });
 
         /// <summary>
+        /// True when the argument is an unbound variable
+        /// This is still true if the argument is a variable that has been unified with another variable,
+        /// provided that other variable is also unbound.
+        /// </summary>
+        public static Goal Unbound<T>(Term<T> arg)
+            => new Predicate<T>("Bound", (g, s, k) => Unifier.Dereference(g.Arguments[0], s) is Var<T> && k(s))[arg];
+
+        /// <summary>
+        /// True when the argument is not an unbound variable, i.e. is either a constant of a bound variable
+        /// </summary>
+        public static Goal Bound<T>(Term<T> arg)
+            => new Predicate<T>("Bound", (g, s, k) => Unifier.Dereference(g.Arguments[0], s) is T && k(s))[arg];
+
+        /// <summary>
         /// Same(x,y) - note parens rather than []s
         /// True if x and y can be unified.  So it really means "true if they can be made the same"
         /// </summary>

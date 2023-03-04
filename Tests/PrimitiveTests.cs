@@ -37,6 +37,22 @@ namespace Tests
         }
 
         [TestMethod]
+        public void BoundTest()
+        {
+            var v = (Var<string>)"v";
+            var p = new TELL.Predicate<string>("p");
+            p["a"].Fact();
+
+            AssertTrue(Bound<int>(1));
+            AssertTrue(And[p[v], Bound(v)]);
+            AssertNot(Bound(v));
+
+            AssertNot(Unbound<int>(1));
+            AssertNot(And[p[v], Unbound(v)]);
+            AssertTrue(Unbound(v));
+        }
+
+        [TestMethod]
         public void AndTest()
         {
             var x = (Var<string>)"x";
