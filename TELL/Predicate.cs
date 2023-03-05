@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using TELL.Interpreter;
 using static TELL.Interpreter.Prover;
 using static TELL.Interpreter.CsvReader;
@@ -21,6 +22,36 @@ namespace TELL
         /// Human-readable name for this predicate
         /// </summary>
         public readonly string Name;
+
+        /// <summary>
+        /// Documentation, if provided
+        /// </summary>
+        public string? DocString;
+
+        /// <summary>
+        /// The name, arguments, and documentation for this predicate
+        /// </summary>
+        public string ManualEntry()
+        {
+            var b = new StringBuilder();
+            b.Append(Name);
+            b.Append("[");
+            var first = true;
+            foreach (var arg in DefaultVariables)
+            {
+                if (first)
+                    first = false;
+                else
+                    b.Append(", ");
+                b.Append(((IVariable)arg).VariableName);
+            }
+
+            b.Append("]");
+            if (DocString != null)
+                b.Append($": {DocString}");
+
+            return b.ToString();
+        }
 
         /// <summary>
         /// Code to call when trying to prove a goal involving this predicate
@@ -201,6 +232,17 @@ namespace TELL
             LoadCsv(path);
             return this;
         }
+
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public Predicate<T1> Documentation(string docString)
+        {
+            DocString = docString;
+            return this;
+        }
     }
 
     /// <summary>
@@ -266,6 +308,16 @@ namespace TELL
             return this;
         }
 
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public Predicate<T1,T2> Documentation(string docString)
+        {
+            DocString = docString;
+            return this;
+        }
     }
 
     /// <summary>
@@ -329,6 +381,17 @@ namespace TELL
         public Predicate<T1,T2,T3> FromFile(string path)
         {
             LoadCsv(path);
+            return this;
+        }
+
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public Predicate<T1,T2,T3> Documentation(string docString)
+        {
+            DocString = docString;
             return this;
         }
     }
@@ -397,6 +460,17 @@ namespace TELL
         public Predicate<T1,T2,T3,T4> FromFile(string path)
         {
             LoadCsv(path);
+            return this;
+        }
+
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public Predicate<T1,T2,T3,T4> Documentation(string docString)
+        {
+            DocString = docString;
             return this;
         }
     }
@@ -469,6 +543,18 @@ namespace TELL
             LoadCsv(path);
             return this;
         }
+
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public Predicate<T1,T2,T3,T4,T5> Documentation(string docString)
+        {
+            DocString = docString;
+            return this;
+        }
+
     }
 
     /// <summary>
@@ -540,6 +626,18 @@ namespace TELL
             LoadCsv(path);
             return this;
         }
+
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public Predicate<T1,T2,T3,T4,T5,T6> Documentation(string docString)
+        {
+            DocString = docString;
+            return this;
+        }
+
     }
 
     /// <summary>
@@ -564,6 +662,17 @@ namespace TELL
         /// </summary>
         public VariadicPredicate(string name, PredicateImplementation i) : base(name, i)
         {
+        }
+
+        /// <summary>
+        /// Add documentation to the predicate
+        /// </summary>
+        /// <param name="docString">Documentation to be stored with the predicate</param>
+        /// <returns>Original predicate</returns>
+        public VariadicPredicate<T> Documentation(string docString)
+        {
+            DocString = docString;
+            return this;
         }
     }
 }

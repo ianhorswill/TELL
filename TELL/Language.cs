@@ -456,7 +456,8 @@ namespace TELL
                 var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[0], s, nameof(Not), 1);
                 var goalArgumentTrue = goalArgument.Prove(s, _ => true);
                 return !goalArgumentTrue && k(s);
-            });
+            })
+            .Documentation("True if argument is unprovable, otherwise false.");
 
         /// <summary>
         /// Runs the goal predicate, but succeeds only once; does not look for further solutions if we backtrack.
@@ -472,7 +473,8 @@ namespace TELL
                     return true;
                 });
                 return goalArgumentTrue && k(result);
-            });
+            })
+            .Documentation("Runs the argument, generating the first solution to it, but blocks generation of subsequent solutions.");
 
         /// <summary>
         /// True when the last argument is the sum, across all solutions to the goal, of the first argument.
@@ -488,7 +490,8 @@ namespace TELL
                     return false;
                 });
                 return Unifier.Unify(result, g.Arguments[2], s, out var finalSubst) && k(finalSubst);
-            });
+            })
+            .Documentation("True when the last argument is the sum, across all solutions to the goal, of the first argument.");
 
         /// <summary>
         /// True when the argument is an unbound variable
@@ -550,7 +553,8 @@ namespace TELL
         /// True when all of its argument goals are true
         /// </summary>
         public static VariadicPredicate<Goal> And = new VariadicPredicate<Goal>("And",
-            (g, s, k) => RunBody(g.Arguments, 0, s, k));
+            (g, s, k) => RunBody(g.Arguments, 0, s, k))
+            .Documentation("True when all the argument goals are true");
 
         private static bool RunBody(object?[] subgoals, int index, Substitution? s, SuccessContinuation k)
             => index < subgoals.Length
