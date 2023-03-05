@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace TELL
 {
@@ -21,6 +22,11 @@ namespace TELL
         /// Predicates and their names
         /// </summary>
         private readonly Dictionary<string, Predicate> predicates = new Dictionary<string, Predicate>();
+
+        /// <summary>
+        /// All Predicates defined in this Program
+        /// </summary>
+        public IEnumerable<Predicate> Predicates => predicates.Select(pair => pair.Value);
 
         /// <summary>
         /// Name of the program, for debugging
