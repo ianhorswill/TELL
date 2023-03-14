@@ -109,6 +109,11 @@ namespace TELL
         public bool IsTrue => CanProve(this);
 
         /// <summary>
+        /// Using a goal as a Boolean is interpreted as calling it and returning true if it succeeds.
+        /// </summary>
+        public static implicit operator bool(Goal g) => g.IsTrue;
+
+        /// <summary>
         /// Test if this goal is provable, return false if so, and true if not.
         /// </summary>
         public bool IsFalse => CanProve(this);
