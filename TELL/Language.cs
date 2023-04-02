@@ -494,6 +494,103 @@ namespace TELL
             .Documentation("True when the last argument is the sum, across all solutions to the goal, of the first argument.");
 
         /// <summary>
+        /// True when the first argument is the minimum across all solutions to the goal.
+        /// </summary>
+        public static readonly Predicate<float, Goal> Min = new Predicate<float,Goal>("Min",
+                (g, s, k) =>
+                {
+                    float result = 0;
+                    bool gotOne = false;
+                    var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[1], s, nameof(Min), 2);
+                    goalArgument.Prove(s, solution =>
+                    {
+                        var newAnswer = Unifier.DereferenceToConstant<float>(g.Arguments[0], solution, nameof(Min), 1);
+                        if (!gotOne || newAnswer < result)
+                            result = newAnswer;
+                        gotOne = true;
+                        return false;
+                    });
+                    return gotOne && Unifier.Unify(result, g.Arguments[0], s, out var finalSubst) && k(finalSubst);
+                })
+            .Documentation("True when the last argument is the minimum, across all solutions to the goal, of the first argument.");
+
+        /// <summary>
+        /// True when the first argument is the maximum across all solutions to the goal.
+        /// </summary>
+        public static readonly Predicate<float, Goal> Max = new Predicate<float,Goal>("Max",
+                (g, s, k) =>
+                {
+                    float result = 0;
+                    bool gotOne = false;
+                    var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[1], s, nameof(Max), 2);
+                    goalArgument.Prove(s, solution =>
+                    {
+                        var newAnswer = Unifier.DereferenceToConstant<float>(g.Arguments[0], solution, nameof(Max), 1);
+                        if (!gotOne || newAnswer > result)
+                            result = newAnswer;
+                        gotOne = true;
+                        return false;
+                    });
+                    return gotOne && Unifier.Unify(result, g.Arguments[0], s, out var finalSubst) && k(finalSubst);
+                })
+            .Documentation("True when the last argument is the maximum, across all solutions to the goal, of the first argument.");
+
+        /// <summary>
+        /// True when utility is the minimal value of that variable across all solutions to the goal, and arg is the value of that variable from that solution.
+        /// </summary>
+        public static Goal Minimal<T>(Var<T> arg, Var<float> utility, Goal g) => new Predicate<T, float,Goal>(nameof(Minimal),
+                (g, s, k) =>
+                {
+                    float bestUtility = 0;
+                    T bestArg = default(T);
+                    bool gotOne = false;
+                    var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[2], s, nameof(Minimal), 2);
+                    goalArgument.Prove(s, solution =>
+                    {
+                        var newUtility = Unifier.DereferenceToConstant<float>(g.Arguments[1], solution, nameof(Minimal), 1);
+                        if (!gotOne || newUtility < bestUtility)
+                        {
+                            bestUtility = newUtility;
+                            bestArg = Unifier.DereferenceToConstant<T>(g.Arguments[0], solution, nameof(Minimal), 0);
+                        }
+                        gotOne = true;
+                        return false;
+                    });
+                    return gotOne
+                           && Unifier.Unify(bestArg, g.Arguments[0], s, out var nextSubst)
+                           && Unifier.Unify(bestUtility, g.Arguments[1], nextSubst, out var finalSubst)
+                           && k(finalSubst);
+                })[arg, utility, g];
+
+        /// <summary>
+        /// True when utility is the minimal value of that variable across all solutions to the goal, and arg is the value of that variable from that solution.
+        /// </summary>
+        public static Goal Maximal<T>(Var<T> arg, Var<float> utility, Goal g) 
+            => new Predicate<T, float,Goal>(nameof(Maximal),
+            (g, s, k) =>
+            {
+                float bestUtility = 0;
+                T bestArg = default(T);
+                bool gotOne = false;
+                var goalArgument = Unifier.DereferenceToConstant<InstantiatedGoal>(g.Arguments[2], s, nameof(Maximal), 2);
+                goalArgument.Prove(s, solution =>
+                {
+                    var newUtility = Unifier.DereferenceToConstant<float>(g.Arguments[1], solution, nameof(Maximal), 1);
+                    if (!gotOne || newUtility > bestUtility)
+                    {
+                        bestUtility = newUtility;
+                        bestArg = Unifier.DereferenceToConstant<T>(g.Arguments[0], solution, nameof(Maximal), 0);
+                    }
+                    gotOne = true;
+                    return false;
+                });
+                return gotOne
+                       && Unifier.Unify(bestArg, g.Arguments[0], s, out var nextSubst)
+                       && Unifier.Unify(bestUtility, g.Arguments[1], nextSubst, out var finalSubst)
+                       && k(finalSubst);
+            })[arg, utility, g];
+
+        /// <summary>
         /// True when the argument is an unbound variable
         /// This is still true if the argument is a variable that has been unified with another variable,
         /// provided that other variable is also unbound.

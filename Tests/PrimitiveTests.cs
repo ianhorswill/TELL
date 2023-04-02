@@ -66,6 +66,58 @@ namespace Tests
         }
 
         [TestMethod]
+        public void MinTest()
+        {
+            var x = (Var<float>)"x";
+            var p = Predicate("p", x);
+            p[2].Fact();
+            p[1].Fact();
+            p[4].Fact();
+            p[3].Fact();
+            Assert.AreEqual(1f, Min[x, p[x]].SolveFor(x));
+        }
+
+        [TestMethod]
+        public void MaxTest()
+        {
+            var x = (Var<float>)"x";
+            var p = Predicate("p", x);
+            p[2].Fact();
+            p[1].Fact();
+            p[4].Fact();
+            p[3].Fact();
+            Assert.AreEqual(4f, Max[x, p[x]].SolveFor(x));
+        }
+
+        [TestMethod]
+        public void MinimalTest()
+        {
+            var x = (Var<float>)"x";
+            var arg = (Var<string>)"arg";
+            var p = Predicate("p", x, arg);
+            p[2, "a"].Fact();
+            p[1, "b"].Fact();
+            p[4,"c"].Fact();
+            p[3,"d"].Fact();
+            Assert.AreEqual(1f, Minimal(arg, x, p[x, arg]).SolveFor(x));
+            Assert.AreEqual("b", Minimal(arg, x, p[x, arg]).SolveFor(arg));
+        }
+
+        [TestMethod]
+        public void MaximalTest()
+        {
+            var x = (Var<float>)"x";
+            var arg = (Var<string>)"arg";
+            var p = Predicate("p", x, arg);
+            p[2, "a"].Fact();
+            p[1, "b"].Fact();
+            p[4,"c"].Fact();
+            p[3,"d"].Fact();
+            Assert.AreEqual(4f, Maximal(arg, x, p[x, arg]).SolveFor(x));
+            Assert.AreEqual("c", Maximal(arg, x, p[x, arg]).SolveFor(arg));
+        }
+
+        [TestMethod]
         public void AndTest()
         {
             var x = (Var<string>)"x";
@@ -155,11 +207,12 @@ namespace Tests
             // Type of the field
             var fieldType = Predicate("fieldType", (FieldInfo f) => f.FieldType);
 
-            // Predicate that finds types with a field named "Predicate"
-            var hasPredicateField = new TELL.Predicate<Type>("hasPredicateField");
             var t = (Var<Type>)"t";
             var f = (Var<FieldInfo>)"f";
-            hasPredicateField[t].If(type[t], field[t, f], fieldName[f, "Predicate"]);
+
+            // Predicate that finds types with a field named "Predicate"
+            var hasPredicateField = new TELL.Predicate<Type>("hasPredicateField", t)
+                .If(type[t], field[t, f], fieldName[f, "Predicate"]);
 
             // Find types that contain fields named Predicate
             AssertTrue(hasPredicateField[typeof(Goal)]);
